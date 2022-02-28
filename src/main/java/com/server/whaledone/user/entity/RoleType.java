@@ -1,6 +1,6 @@
 package com.server.whaledone.user.entity;
 
-public enum Role {
+public enum RoleType {
     ROLE_USER,
     ROLE_MEMBERSHIP,
     ROLE_ADMIN
