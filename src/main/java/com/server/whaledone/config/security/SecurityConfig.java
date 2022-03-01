@@ -1,5 +1,8 @@
 package com.server.whaledone.config.security;
 
+import com.server.whaledone.config.security.jwt.JwtAuthenticationFilter;
+import com.server.whaledone.config.security.jwt.JwtAuthorizationFilter;
+import com.server.whaledone.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +17,7 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CorsFilter corsFilter;
+    private final UserRepository userRepository;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -28,7 +32,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+
                 .addFilter(corsFilter)
+                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
+
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/v1/sign-in", "/api/v1/sign-up").permitAll()
                 .antMatchers("/api/v1/membership")
