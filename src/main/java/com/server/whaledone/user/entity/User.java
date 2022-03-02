@@ -30,6 +30,9 @@ public class User extends BaseTimeEntity {
 
     private String profileImgUrl;
 
+    // 서비스 알람 수신 여부
+    private Boolean alarmStatus;
+
     // default ROLE_USER
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
@@ -38,15 +41,15 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    // 서비스 알람 수신 여부
-    private Boolean alarmStatus;
-
     @Builder
-    public User(String nation, String phoneNumber, Boolean alarmStatus, String email, String nickName) {
+    public User(String nation, String phoneNumber, Boolean alarmStatus, String email, String nickName, String password) {
         this.nation = nation;
         this.phoneNumber = phoneNumber;
         this.alarmStatus = alarmStatus;
         this.email = email;
         this.nickName = nickName;
+        this.password = password;
+        this.roleType = RoleType.ROLE_USER;
+        this.status = Status.ACTIVE;
     }
 }
