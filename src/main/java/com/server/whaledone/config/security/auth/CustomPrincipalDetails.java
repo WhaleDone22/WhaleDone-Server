@@ -23,6 +23,10 @@ public class CustomPrincipalDetails implements UserDetails {
         return user.getEmail();
     }
 
+    public String getRole() {
+        return user.getRoleType().toString();
+    }
+
     @Override
     public String getPassword() {
         return user.getPassword();
