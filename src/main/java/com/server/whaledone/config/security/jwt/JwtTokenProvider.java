@@ -27,12 +27,12 @@ public class JwtTokenProvider {
 
 
     // jwt 토큰 생성
-    public String createToken(CustomPrincipalDetails userDetails, RoleType roleType) {
+    public String createToken(String email, RoleType roleType) {
         return TOKEN_PREFIX + JWT.create()
-                .withSubject(userDetails.getEmail())
+                .withSubject(email)
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .withClaim("role", userDetails.getRole())
-                .withClaim("email", userDetails.getEmail())
+                .withClaim("role", roleType.toString())
+                .withClaim("email", email)
                 .sign(Algorithm.HMAC512(SECRET_KEY));
     }
 
