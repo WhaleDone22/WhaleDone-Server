@@ -13,14 +13,14 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class CustomPrincipalDetailsService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> optionalUser = userRepository.findByEmailAndStatus(email, Status.ACTIVE);
-        return new CustomPrincipalDetails(
+        return new CustomUserDetails(
                 optionalUser.orElseThrow(() -> new UsernameNotFoundException(email)));
     }
 }

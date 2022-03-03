@@ -7,11 +7,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class CustomPrincipalDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 
     private User user;
 
-    public CustomPrincipalDetails(User user) {
+    public CustomUserDetails(User user) {
         this.user = user;
     }
 

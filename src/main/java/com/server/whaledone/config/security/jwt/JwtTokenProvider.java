@@ -2,8 +2,7 @@ package com.server.whaledone.config.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.server.whaledone.config.security.auth.CustomPrincipalDetails;
-import com.server.whaledone.config.security.auth.CustomPrincipalDetailsService;
+import com.server.whaledone.config.security.auth.CustomUserDetailsService;
 import com.server.whaledone.user.entity.RoleType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +22,7 @@ public class JwtTokenProvider {
     private String HEADER_STRING = "X-AUTH-TOKEN";
     private String TOKEN_PREFIX = "Bearer ";
 
-    private final CustomPrincipalDetailsService customPrincipalDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
 
 
     // jwt 토큰 생성
@@ -38,7 +37,7 @@ public class JwtTokenProvider {
 
     // jwt 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = customPrincipalDetailsService.loadUserByUsername(getUserEmail(token));
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(getUserEmail(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
