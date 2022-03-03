@@ -33,6 +33,8 @@ public class SignUpRequestDto {
     // 서비스 알람 수신 여부
     private Boolean alarmStatus;
 
+    private String jwtToken;
+
     public User toEntity() {
         return User.builder()
                 .nation(this.nation)
