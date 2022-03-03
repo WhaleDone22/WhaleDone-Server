@@ -1,5 +1,6 @@
 package com.server.whaledone.user;
 
+import com.server.whaledone.user.dto.request.SignInRequestDto;
 import com.server.whaledone.user.dto.request.SignUpRequestDto;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,8 +28,10 @@ public class UserController {
         return userService.signUp(dto);
     }
 
+    @Operation(summary = "로그인 API", description = "로그인에 필요한 json 데이터(email, password)를 받아서 토큰을 포함한 dto를 리턴한다.")
     @PostMapping("/sign-in")
-    public String temp() {
-        return "완료";
+    public String signIn(@RequestBody @Valid SignInRequestDto dto, Errors errors) {
+//        if(errors.hasErrors())
+        return userService.signIn(dto);
     }
 }
