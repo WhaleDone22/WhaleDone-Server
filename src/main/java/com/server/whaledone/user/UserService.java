@@ -19,16 +19,16 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private JwtTokenProvider jwtTokenProvider;
 
-    public String signUp(SignUpRequestDto dto) {
+    public SignUpResponseDto signUp(SignUpRequestDto dto) {
 
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
 
         User savedUser = userRepository.save(dto.toEntity());
         dto.setJwtToken(jwtTokenProvider.createToken(dto.getEmail(), savedUser.getRoleType()));
-        return new SignUpResponseDto(savedUser).toString();
+        return new SignUpResponseDto(savedUser);
     }
 
-    public String signIn(SignInRequestDto dto) {
+    public SignInResponseDto signIn(SignInRequestDto dto) {
         User user = userRepository.findByEmailAndStatus(dto.getEmail(), Status.ACTIVE).orElseThrow(() -> new IllegalArgumentException("SignIn"));
         if (!bCryptPasswordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException();
@@ -42,7 +42,7 @@ public class UserService {
                 .jwtToken(token)
                 .build();
 
-        return result.toString();
+        return result;
     }
 
 }
