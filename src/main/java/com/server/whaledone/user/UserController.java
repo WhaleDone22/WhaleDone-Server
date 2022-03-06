@@ -1,8 +1,11 @@
 package com.server.whaledone.user;
 
 import com.server.whaledone.config.response.ResponseService;
+import com.server.whaledone.config.response.result.CommonResult;
 import com.server.whaledone.config.response.result.SingleResult;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
+import com.server.whaledone.user.dto.request.EmailValidRequestDto;
+import com.server.whaledone.user.dto.request.NicknameValidRequestDto;
 import com.server.whaledone.user.dto.request.SignInRequestDto;
 import com.server.whaledone.user.dto.request.SignUpRequestDto;
 import com.server.whaledone.user.dto.response.SignInResponseDto;
@@ -43,5 +46,19 @@ public class UserController {
     @GetMapping("/user")
     public SingleResult<UserInfoResponseDto> getUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return responseService.getSingleResult(userService.getUserInfo(userDetails));
+    }
+
+    @Operation(summary = "이메일 검증 API", description = "전달 받은 이메일을 이용해서 검증 결과를 리턴한다.")
+    @PostMapping("/user/validation/email")
+    public CommonResult getEmailValidationStatus(@RequestBody @Valid EmailValidRequestDto email) {
+        userService.getEmailValidationStatus(email);
+        return responseService.getSuccessResult();
+    }
+
+    @Operation(summary = "닉네임 검증 API", description = "전달 받은 닉네임을 이용해서 검증 결과를 리턴한다.")
+    @PostMapping("/user/validation/nickname")
+    public CommonResult getNicknameValidationStatus(@RequestBody @Valid NicknameValidRequestDto nickName) {
+        userService.getNicknameValidationStatus(nickName);
+        return responseService.getSuccessResult();
     }
 }

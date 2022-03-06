@@ -5,6 +5,8 @@ import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.config.security.jwt.JwtTokenProvider;
+import com.server.whaledone.user.dto.request.EmailValidRequestDto;
+import com.server.whaledone.user.dto.request.NicknameValidRequestDto;
 import com.server.whaledone.user.dto.request.SignInRequestDto;
 import com.server.whaledone.user.dto.request.SignUpRequestDto;
 import com.server.whaledone.user.dto.response.SignInResponseDto;
@@ -59,5 +61,16 @@ public class UserService {
 
     public UserInfoResponseDto getUserInfo(CustomUserDetails userDetails) {
         return new UserInfoResponseDto(userDetails.getUser());
+    }
+
+    public void getEmailValidationStatus(EmailValidRequestDto email) {
+        if (userRepository.findByEmailAndStatus(email.getEmail(), Status.ACTIVE).isPresent()) {
+            throw new CustomException(CustomExceptionStatus.USER_EXISTS_EMAIL);
+        }
+    }
+    public void getNicknameValidationStatus(NicknameValidRequestDto nickName) {
+        if (userRepository.findByNickNameAndStatus(nickName.getNickName(), Status.ACTIVE).isPresent()) {
+            throw new CustomException(CustomExceptionStatus.USER_EXISTS_NICKNAME);
+        }
     }
 }
