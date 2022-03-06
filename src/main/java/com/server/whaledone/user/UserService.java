@@ -46,7 +46,7 @@ public class UserService {
         SignInResponseDto result = SignInResponseDto.builder()
                 .email(user.getEmail())
                 .nickName(user.getNickName())
-                .accountId(user.getId())
+                .userId(user.getId())
                 .jwtToken(token)
                 .build();
 
