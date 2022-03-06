@@ -32,8 +32,9 @@ public class UserService {
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
 
         User savedUser = userRepository.save(dto.toEntity());
-        dto.setJwtToken(jwtTokenProvider.createToken(dto.getEmail(), savedUser.getRoleType()));
-        return new SignUpResponseDto(savedUser);
+        SignUpResponseDto signUpResponseDto = new SignUpResponseDto(savedUser);
+        signUpResponseDto.setJwtToken(jwtTokenProvider.createToken(dto.getEmail(), savedUser.getRoleType()));
+        return signUpResponseDto;
     }
 
     // 로그인
