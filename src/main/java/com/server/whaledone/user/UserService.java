@@ -3,11 +3,13 @@ package com.server.whaledone.user;
 import com.server.whaledone.config.Entity.Status;
 import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
+import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.config.security.jwt.JwtTokenProvider;
 import com.server.whaledone.user.dto.request.SignInRequestDto;
 import com.server.whaledone.user.dto.request.SignUpRequestDto;
 import com.server.whaledone.user.dto.response.SignInResponseDto;
 import com.server.whaledone.user.dto.response.SignUpResponseDto;
+import com.server.whaledone.user.dto.response.UserInfoResponseDto;
 import com.server.whaledone.user.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,8 +25,9 @@ public class UserService {
 
     // 회원가입
     public SignUpResponseDto signUp(SignUpRequestDto dto) {
-        User user = userRepository.findByEmailAndStatus(dto.getEmail(), Status.ACTIVE)
-                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_EXISTS_EMAIL));
+        if (userRepository.findByEmailAndStatus(dto.getEmail(), Status.ACTIVE).isPresent()) {
+            throw new CustomException(CustomExceptionStatus.USER_EXISTS_EMAIL);
+        }
 
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
 
@@ -53,4 +56,7 @@ public class UserService {
         return result;
     }
 
+    public UserInfoResponseDto getUserInfo(CustomUserDetails userDetails) {
+        return new UserInfoResponseDto(userDetails.getUser());
+    }
 }
