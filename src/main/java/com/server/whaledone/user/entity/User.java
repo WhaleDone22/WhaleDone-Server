@@ -30,6 +30,10 @@ public class User extends BaseTimeEntity {
 
     private String profileImgUrl;
 
+    private String groupName;
+
+    private String alarmTime;
+
     // 서비스 알람 수신 여부
     private Boolean alarmStatus;
 

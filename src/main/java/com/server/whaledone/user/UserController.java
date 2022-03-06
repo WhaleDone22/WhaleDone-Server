@@ -2,18 +2,18 @@ package com.server.whaledone.user;
 
 import com.server.whaledone.config.response.ResponseService;
 import com.server.whaledone.config.response.result.SingleResult;
+import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.user.dto.request.SignInRequestDto;
 import com.server.whaledone.user.dto.request.SignUpRequestDto;
 import com.server.whaledone.user.dto.response.SignInResponseDto;
 import com.server.whaledone.user.dto.response.SignUpResponseDto;
+import com.server.whaledone.user.dto.response.UserInfoResponseDto;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -36,5 +36,12 @@ public class UserController {
     @PostMapping("/sign-in")
     public SingleResult<SignInResponseDto> signIn(@RequestBody @Valid SignInRequestDto dto) {
         return responseService.getSingleResult(userService.signIn(dto));
+    }
+
+    @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
+    @Operation(summary = "회원 조회 API", description = "전달 받은 token을 이용해서 유저 정보 dto를 리턴한다.")
+    @GetMapping("/user")
+    public SingleResult<UserInfoResponseDto> getUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return responseService.getSingleResult(userService.getUserInfo(userDetails));
     }
 }
