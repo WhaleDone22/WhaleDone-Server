@@ -1,7 +1,6 @@
 package com.server.whaledone.config.security;
 
 import com.server.whaledone.config.security.jwt.JwtAuthenticationFilter;
-import com.server.whaledone.config.security.jwt.JwtAuthorizationFilter;
 import com.server.whaledone.config.security.jwt.JwtTokenProvider;
 import com.server.whaledone.user.UserRepository;
 import lombok.RequiredArgsConstructor;
