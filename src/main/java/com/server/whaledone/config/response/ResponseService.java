@@ -14,13 +14,13 @@ public class ResponseService {
 
     @Getter
     public enum CommonResponse {
-        SUCCESS(0, "응답 성공"),
-        FAIL(-1, "응답 실패");
+        SUCCESS("SUCCESS", "응답 성공"),
+        FAIL("FAIL", "응답 실패");
 
-        int code;
+        String code;
         String message;
 
-        CommonResponse(int code, String message) {
+        CommonResponse(String code, String message) {
             this.code = code;
             this.message = message;
         }

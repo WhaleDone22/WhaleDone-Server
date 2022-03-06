@@ -28,15 +28,13 @@ public class UserController {
 
     @Operation(summary = "회원가입 API", description = "회원가입에 필요한 json 데이터를 받아서 저장 후 토큰을 포함한 dto를 리턴한다.")
     @PostMapping("/sign-up")
-    public SingleResult<SignUpResponseDto> signUp(@RequestBody @Valid SignUpRequestDto dto, Errors errors) {
-//        if (errors.hasErrors()) {}
+    public SingleResult<SignUpResponseDto> signUp(@RequestBody @Valid SignUpRequestDto dto) {
         return responseService.getSingleResult(userService.signUp(dto));
     }
 
     @Operation(summary = "로그인 API", description = "로그인에 필요한 json 데이터(email, password)를 받아서 토큰을 포함한 dto를 리턴한다.")
     @PostMapping("/sign-in")
-    public SingleResult<SignInResponseDto> signIn(@RequestBody @Valid SignInRequestDto dto, Errors errors) {
-//        if(errors.hasErrors())
+    public SingleResult<SignInResponseDto> signIn(@RequestBody @Valid SignInRequestDto dto) {
         return responseService.getSingleResult(userService.signIn(dto));
     }
 }

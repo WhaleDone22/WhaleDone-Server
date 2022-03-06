@@ -1,6 +1,8 @@
 package com.server.whaledone.user;
 
 import com.server.whaledone.config.Entity.Status;
+import com.server.whaledone.config.response.exception.CustomException;
+import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.jwt.JwtTokenProvider;
 import com.server.whaledone.user.dto.request.SignInRequestDto;
 import com.server.whaledone.user.dto.request.SignUpRequestDto;
@@ -19,7 +21,10 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private JwtTokenProvider jwtTokenProvider;
 
+    // 회원가입
     public SignUpResponseDto signUp(SignUpRequestDto dto) {
+        User user = userRepository.findByEmailAndStatus(dto.getEmail(), Status.ACTIVE)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_EXISTS_EMAIL));
 
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
 
@@ -28,10 +33,13 @@ public class UserService {
         return new SignUpResponseDto(savedUser);
     }
 
+    // 로그인
     public SignInResponseDto signIn(SignInRequestDto dto) {
-        User user = userRepository.findByEmailAndStatus(dto.getEmail(), Status.ACTIVE).orElseThrow(() -> new IllegalArgumentException("SignIn"));
+        User user = userRepository.findByEmailAndStatus(dto.getEmail(), Status.ACTIVE)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS_EMAIL));
+
         if (!bCryptPasswordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException();
+            throw new CustomException(CustomExceptionStatus.USER_NOT_MATCHES_PASSWORD);
         }
         String token = jwtTokenProvider.createToken(user.getEmail(), user.getRoleType());
 
