@@ -48,6 +48,14 @@ public class UserController {
         return responseService.getSingleResult(userService.getUserInfo(userDetails));
     }
 
+    @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
+    @Operation(summary = "회원 탈퇴 API", description = "토큰을 기준으로 회원의 계정 status를 변경한다.")
+    @PatchMapping("/user/status")
+    public CommonResult deleteUserAccount(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        userService.deleteUserAccount(userDetails);
+        return responseService.getSuccessResult();
+    }
+
     @Operation(summary = "이메일 검증 API", description = "전달 받은 이메일을 이용해서 검증 결과를 리턴한다.")
     @PostMapping("/user/validation/email")
     public CommonResult getEmailValidationStatus(@RequestBody @Valid EmailValidRequestDto email) {

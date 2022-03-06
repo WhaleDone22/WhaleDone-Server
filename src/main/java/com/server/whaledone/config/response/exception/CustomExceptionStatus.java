@@ -13,6 +13,7 @@ public enum CustomExceptionStatus {
     /**
      * User
      */
+    USER_NOT_EXISTS(true, "U001", "존재하지 않는 사용자입니다."),
     // Email
     USER_EXISTS_EMAIL(true,"UE001","이미 가입된 이메일이에요."),
     USER_INVALID_EMAIL(true, "UE002", "올바른 이메일 주소가 아니에요"),

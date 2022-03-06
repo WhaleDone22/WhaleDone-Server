@@ -16,6 +16,7 @@ import com.server.whaledone.user.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -72,5 +73,12 @@ public class UserService {
         if (userRepository.findByNickNameAndStatus(nickName.getNickName(), Status.ACTIVE).isPresent()) {
             throw new CustomException(CustomExceptionStatus.USER_EXISTS_NICKNAME);
         }
+    }
+
+    @Transactional
+    public void deleteUserAccount(CustomUserDetails userDetails) {
+        User activeUser = userRepository.findByEmailAndStatus(userDetails.getUser().getEmail(), Status.ACTIVE)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+        activeUser.deleteAccount();
     }
 }

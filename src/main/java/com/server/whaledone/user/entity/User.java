@@ -56,4 +56,8 @@ public class User extends BaseTimeEntity {
         this.roleType = RoleType.ROLE_USER;
         this.status = Status.ACTIVE;
     }
+
+    public void deleteAccount() {
+        this.status = Status.DELETED;
+    }
 }
