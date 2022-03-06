@@ -17,8 +17,8 @@ public class SignUpRequestDto {
     private String email;
 
     @NotBlank
-    @Length(min = 5)
-    // @Pattern(regexp = )
+    @Length(max = 5)
+    @Pattern(regexp = "^[0-9a-zA-Z가-힣*,._+!?]*$")
     @ApiModelProperty(example = "유저 닉네임")
     private String nickName;
 
@@ -28,6 +28,7 @@ public class SignUpRequestDto {
 
     @NotBlank
     @Length(min = 8)
+    @Pattern(regexp = "^[0-9a-zA-Z]*$")
     @ApiModelProperty(example = "유저 비밀번호")
     private String password;
 
