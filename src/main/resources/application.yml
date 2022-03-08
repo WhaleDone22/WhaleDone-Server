@@ -1,12 +1,9 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://whaledone.cpbpd7kl2fj5.ap-northeast-2.rds.amazonaws.com:3306/Whaledone_Dev?serverTimezone=UTC&characterEncoding=UTF-8
-#    username: admin
-#    password: whaledone1234!
     url: jdbc:mysql://localhost:3306/whaledone?serverTimezone=UTC&characterEncoding=UTF-8
-      username: root
-      password: 105308
+    username: root
+    password: 105308
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
@@ -19,5 +16,4 @@ spring:
 springdoc:
   swagger-ui:
     operations-sorter: method
-  paths-to-match:
-    - /api/v1/**
+  paths-to-match: /api/v1/**
