@@ -1,35 +1,35 @@
 package com.server.whaledone.user.dto.response;
 
 import com.server.whaledone.user.entity.User;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
 public class SignUpResponseDto {
 
-    @ApiModelProperty(example = "유저 db id")
+    @Schema(example = "유저 db id")
     private Long userId;
 
-    @ApiModelProperty(example = "유저 이메일")
+    @Schema(example = "유저 이메일")
     private String email;
 
-    @ApiModelProperty(example = "유저 닉네임")
+    @Schema(example = "유저 닉네임")
     private String nickName;
 
     // 추후에 국가 클래스로 변경
-    @ApiModelProperty(example = "국가 코드")
+    @Schema(example = "국가 코드")
     private String nation;
 
-    @ApiModelProperty(example = "유저 전화 번호")
+    @Schema(example = "유저 전화 번호")
     private String phoneNumber;
 
-    @ApiModelProperty(example = "유저 프로필 이미지 URL")
+    @Schema(example = "유저 프로필 이미지 URL")
     private String profileImgUrl;
 
-    @ApiModelProperty(example = "서비스 알람 수신 여부")
+    @Schema(example = "서비스 알람 수신 여부")
     private Boolean alarmStatus;
 
-    @ApiModelProperty(example = "유저 access token")
+    @Schema(example = "유저 access token")
     private String jwtToken;
 
     public SignUpResponseDto(User user) {

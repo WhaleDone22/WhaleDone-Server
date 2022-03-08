@@ -1,6 +1,6 @@
 package com.server.whaledone.user.dto.request;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -12,11 +12,11 @@ public class SignInRequestDto {
 
     @Email
     @NotBlank
-    @ApiModelProperty(example = "유저 이메일")
+    @Schema(example = "유저 이메일")
     private String email;
 
     @NotBlank
     @Length(min = 8)
-    @ApiModelProperty(example = "유저 비밀번호")
+    @Schema(example = "유저 비밀번호")
     private String password;
 }

@@ -11,16 +11,16 @@ import com.server.whaledone.user.dto.request.SignUpRequestDto;
 import com.server.whaledone.user.dto.response.SignInResponseDto;
 import com.server.whaledone.user.dto.response.SignUpResponseDto;
 import com.server.whaledone.user.dto.response.UserInfoResponseDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Api(tags = {"User API"})
+@Tag(name = "User API")
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -41,14 +41,14 @@ public class UserController {
         return responseService.getSingleResult(userService.signIn(dto));
     }
 
-    @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
     @Operation(summary = "회원 조회 API", description = "전달 받은 token을 이용해서 유저 정보 dto를 리턴한다.")
     @GetMapping("/user")
     public SingleResult<UserInfoResponseDto> getUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return responseService.getSingleResult(userService.getUserInfo(userDetails));
     }
 
-    @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
     @Operation(summary = "회원 탈퇴 API", description = "토큰을 기준으로 회원의 계정 status를 변경한다.")
     @PatchMapping("/user/status")
     public CommonResult deleteUserAccount(@AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -68,5 +68,10 @@ public class UserController {
     public CommonResult getNicknameValidationStatus(@RequestBody @Valid NicknameValidRequestDto nickName) {
         userService.getNicknameValidationStatus(nickName);
         return responseService.getSuccessResult();
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        return "test";
     }
 }

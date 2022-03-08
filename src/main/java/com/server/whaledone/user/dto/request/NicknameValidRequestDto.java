@@ -1,6 +1,6 @@
 package com.server.whaledone.user.dto.request;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -14,6 +14,6 @@ public class NicknameValidRequestDto {
     @NotBlank
     @Length(max = 5)
     @Pattern(regexp = "^[0-9a-zA-Z가-힣*,._+!?]*$")
-    @ApiModelProperty(example = "유저 닉네임")
+    @Schema(example = "유저 닉네임")
     private String nickName;
 }

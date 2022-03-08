@@ -20,7 +20,6 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CorsFilter corsFilter;
-    private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
@@ -30,8 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/v2/api-docs/**", "/swagger-resources/**",
-                "/swagger-ui/**", "/webjars/**", "/swagger/**","/swagger.json", "/h2-console");
+        web.ignoring().antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**");
     }
 
     @Override

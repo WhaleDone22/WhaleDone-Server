@@ -1,6 +1,6 @@
 package com.server.whaledone.user.dto.request;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +13,6 @@ public class EmailValidRequestDto {
 
     @Email
     @NotBlank
-    @ApiModelProperty(example = "유저 이메일")
+    @Schema(example = "유저 이메일")
     private String email;
 }

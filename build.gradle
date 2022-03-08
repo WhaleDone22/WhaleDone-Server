@@ -32,8 +32,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
-	// https://springfox.github.io/springfox/docs/current/#getting-started
-	implementation "io.springfox:springfox-boot-starter:3.0.0"
+	// https://springdoc.org/#migrating-from-springfox
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
 
 	// https://mvnrepository.com/artifact/com.auth0/java-jwt
 	implementation group: 'com.auth0', name: 'java-jwt', version: '3.18.2'
