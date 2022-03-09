@@ -4,7 +4,7 @@
   os: linux
   files:
     - source: /
-      destination: /home/ec2-user/env/WhaleDone-Server # 프로젝트 이름
+      destination: /home/ec2-user/env/WhaleDone-Server/ # 프로젝트 이름
       overwrite: yes
 
   permissions:
@@ -20,6 +20,9 @@
       - location: scripts/deploy.sh
         timeout: 180
         runas: ec2-user
-
-
-
+      - location: scripts/health_check.sh
+        timeout: 180
+        runas: ec2-user
+      - location: scripts/switch.sh
+        timeout: 180
+        runas: ec2-user
