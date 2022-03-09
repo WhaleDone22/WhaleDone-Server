@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/whaledone?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: 105308
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+springdoc:
+  swagger-ui:
+    operations-sorter: method
+  paths-to-match: /api/v1/**
