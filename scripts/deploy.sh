@@ -1,36 +1,25 @@
-#! /bin/bash
+#!/bin/bash
+REPOSITORY=/home/ec2-user/env/WhaleDone-Server
+CURRENT_PORT=$(cat /home/ec2-user/service_url.inc | grep -Po '[0-9]+' | tail -1)
+TARGET_PORT=0
 
-REPOSITORY=/home/ec2-user/env
-PROJECT_NAME=WhaleDone-Server
+echo "> Current port of running WAS is ${CURRENT_PORT}."
 
-echo "> Build 파일 복사"
-
-cp $REPOSITORY/$PROJECT_NAME/build/libs/*.jar $REPOSITORY/
-
-echo "> 현재 구동중인 애플리케이션 pid 확인"
-
-CURRENT_PID=$(pgrep -fl whaledone | grep jar | awk '{print $1}')
-
-echo "현재 구동중인 어플리케이션 pid: $CURRENT_PID"
-
-if [ -z "$CURRENT_PID" ]; then
-    echo "> 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다."
+if [ ${CURRENT_PORT} -eq 8081 ]; then
+  TARGET_PORT=8080
+elif [ ${CURRENT_PORT} -eq 8080 ]; then
+  TARGET_PORT=8081
 else
-    echo "> kill -15 $CURRENT_PID"
-    kill -15 $CURRENT_PID
-    sleep 5
+  echo "> No WAS is connected to nginx"
 fi
 
-echo "> 새 어플리케이션 배포"
+TARGET_PID=$(lsof -Fp -i TCP:${TARGET_PORT} | grep -Po 'p[0-9]+' | grep -Po '[0-9]+')
 
-JAR_NAME=$(ls -tr $REPOSITORY/*.jar | tail -n 1)
+if [ ! -z ${TARGET_PID} ]; then
+  echo "> Kill WAS running at ${TARGET_PORT}."
+  sudo kill ${TARGET_PID}
+fi
 
-echo "> JAR Name: $JAR_NAME"
-
-echo "> $JAR_NAME 에 실행권한 추가"
-
-chmod +x $JAR_NAME
-
-echo "> $JAR_NAME 실행"
-
-nohup java -jar $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &
+nohup java -jar -Dserver.port=${TARGET_PORT} ${REPOSITORY}/build/libs/* > /home/ec2-user/env/nohup.out 2>&1 &
+echo "> Now new WAS runs at ${TARGET_PORT}."
+exit 0
