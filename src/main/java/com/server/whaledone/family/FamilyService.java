@@ -6,6 +6,7 @@ import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.family.dto.request.UpdateFamilyNameRequestDto;
 import com.server.whaledone.family.dto.request.ValidateInvitationCodeRequestDto;
 import com.server.whaledone.family.dto.response.CreateFamilyResponseDto;
+import com.server.whaledone.family.dto.response.UsersInFamilyResponseDto;
 import com.server.whaledone.family.entity.Family;
 import com.server.whaledone.user.UserRepository;
 import com.server.whaledone.user.entity.User;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -66,5 +69,16 @@ public class FamilyService {
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
 
         family.addMember(user);
+    }
+
+    @Transactional
+    public List<UsersInFamilyResponseDto> getUsersInFamily(Long familyId) {
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.GROUP_NOT_EXISTS));
+
+        return family.getUsers()
+                .stream()
+                .map(UsersInFamilyResponseDto::new)
+                .collect(Collectors.toList());
     }
 }

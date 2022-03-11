@@ -2,11 +2,13 @@ package com.server.whaledone.family;
 
 import com.server.whaledone.config.response.ResponseService;
 import com.server.whaledone.config.response.result.CommonResult;
+import com.server.whaledone.config.response.result.MultipleResult;
 import com.server.whaledone.config.response.result.SingleResult;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.family.dto.request.UpdateFamilyNameRequestDto;
 import com.server.whaledone.family.dto.request.ValidateInvitationCodeRequestDto;
 import com.server.whaledone.family.dto.response.CreateFamilyResponseDto;
+import com.server.whaledone.family.dto.response.UsersInFamilyResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,6 +35,7 @@ public class FamilyController {
         return responseService.getSingleResult(familyService.createFamily(userDetails));
     }
 
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
     @Operation(summary = "가족 채널 이름 변경 API",
             description = "가족 채널명을 수정한다.")
     @PatchMapping("/families/{familyId}/name")
@@ -48,5 +51,13 @@ public class FamilyController {
                                                @RequestBody ValidateInvitationCodeRequestDto dto) {
         familyService.validateInvitationCode(userDetails, dto);
         return responseService.getSuccessResult();
+    }
+
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
+    @Operation(summary = "해당 가족 채널에 있는 가족 구성원 조회 API",
+            description = "갖고 있는 familyId를 통해 해당 가족 구성원을 조회한다.")
+    @GetMapping("/families/{familyId}/users")
+    public MultipleResult<UsersInFamilyResponseDto> getUsersInFamily(@PathVariable Long familyId) {
+        return responseService.getMultipleResult(familyService.getUsersInFamily(familyId));
     }
 }
