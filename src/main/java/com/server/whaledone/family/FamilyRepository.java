@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface FamilyRepository extends JpaRepository<Family, Long> {
     Optional<Family> findByInvitationCode(String invitationCode);
+
+    Optional<Family> findById(Long familyId);
 }

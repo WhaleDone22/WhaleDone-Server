@@ -38,6 +38,10 @@ public class Family extends BaseTimeEntity {
         users.add(user);
     } // 연관관계 편의 메서드
 
+    public void changeName(String familyName) {
+        this.familyName = familyName;
+    }
+
     @Builder
     Family(String invitationCode) {
         this.familyName = "웨일던, 칭찬하는 가족";

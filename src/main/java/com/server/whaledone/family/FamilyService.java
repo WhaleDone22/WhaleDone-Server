@@ -3,6 +3,7 @@ package com.server.whaledone.family;
 import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
+import com.server.whaledone.family.dto.request.UpdateFamilyNameRequestDto;
 import com.server.whaledone.family.dto.response.CreateFamilyResponseDto;
 import com.server.whaledone.family.entity.Family;
 import com.server.whaledone.user.UserRepository;
@@ -44,5 +45,12 @@ public class FamilyService {
                 .invitationCode(invitationCode)
                 .remainingValidTime(String.valueOf(remainTime))
                 .build();
+    }
+
+    @Transactional
+    public void updateFamilyName(Long familyId, UpdateFamilyNameRequestDto dto) {
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.GROUP_NOT_EXISTS));
+        family.changeName(dto.getUpdateName());
     }
 }

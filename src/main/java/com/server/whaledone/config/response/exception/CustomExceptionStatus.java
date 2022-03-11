@@ -29,7 +29,10 @@ public enum CustomExceptionStatus {
 
     // InvitationCode
     INVITATION_EXPIRED_CODE(true, "I001", "만료된 초대코드입니다."),
-    INVITATION_INVALID_CODE(true, "I002", "일치하는 초대코드가 없습니다");
+    INVITATION_INVALID_CODE(true, "I002", "일치하는 초대코드가 없습니다"),
+
+    //Group
+    GROUP_NOT_EXISTS(true, "G001", "해당 가족채널이 존재하지 않습니다.");
 
     private final boolean responseStatus;
     private final String code;
