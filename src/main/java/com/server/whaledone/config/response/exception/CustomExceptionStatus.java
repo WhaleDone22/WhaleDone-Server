@@ -32,7 +32,8 @@ public enum CustomExceptionStatus {
     INVITATION_INVALID_CODE(true, "I002", "일치하는 초대코드가 없습니다"),
 
     //Group
-    GROUP_NOT_EXISTS(true, "G001", "해당 가족채널이 존재하지 않습니다.");
+    GROUP_NOT_EXISTS(true, "G001", "해당 가족채널이 존재하지 않습니다."),
+    GROUP_CODE_NOT_EXISTS(true, "G002", "일치하는 초대 코드가 존재하지 않습니다.");
 
     private final boolean responseStatus;
     private final String code;

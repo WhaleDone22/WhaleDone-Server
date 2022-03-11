@@ -4,6 +4,7 @@ import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.family.dto.request.UpdateFamilyNameRequestDto;
+import com.server.whaledone.family.dto.request.ValidateInvitationCodeRequestDto;
 import com.server.whaledone.family.dto.response.CreateFamilyResponseDto;
 import com.server.whaledone.family.entity.Family;
 import com.server.whaledone.user.UserRepository;
@@ -52,5 +53,18 @@ public class FamilyService {
         Family family = familyRepository.findById(familyId)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.GROUP_NOT_EXISTS));
         family.changeName(dto.getUpdateName());
+    }
+
+    @Transactional
+    public void validateInvitationCode(CustomUserDetails userDetails, ValidateInvitationCodeRequestDto dto) {
+        Family family = familyRepository.findByInvitationCode(dto.getInvitationCode())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.GROUP_CODE_NOT_EXISTS));
+
+        // family.getInvitationCode 후 유효시간 체크하기 -> 지났으면 오류
+
+        User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+
+        family.addMember(user);
     }
 }
