@@ -1,5 +1,6 @@
 package com.server.whaledone.config.security.auth;
 
+import com.server.whaledone.config.Entity.Status;
 import com.server.whaledone.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +26,10 @@ public class CustomUserDetails implements UserDetails {
 
     public String getRole() {
         return user.getRoleType().toString();
+    }
+
+    public Status getStatus() {
+        return user.getStatus();
     }
 
     @Override

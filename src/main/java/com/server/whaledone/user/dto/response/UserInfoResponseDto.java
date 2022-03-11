@@ -35,7 +35,7 @@ public class UserInfoResponseDto {
         this.phoneNumber = user.getPhoneNumber();
         this.profileImgUrl = user.getProfileImgUrl();
         this.alarmStatus = user.getAlarmStatus();
-        this.groupName = user.getGroupName();
+        this.groupName = user.getFamily().getFamilyName();
         this.alarmTime = user.getAlarmTime();
     }
 }
