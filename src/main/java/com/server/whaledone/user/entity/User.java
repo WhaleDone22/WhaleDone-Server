@@ -2,14 +2,17 @@ package com.server.whaledone.user.entity;
 
 import com.server.whaledone.config.Entity.BaseTimeEntity;
 import com.server.whaledone.config.Entity.Status;
-import lombok.*;
+import com.server.whaledone.family.entity.Family;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@ToString
 @Entity
 public class User extends BaseTimeEntity {
 
@@ -30,7 +33,9 @@ public class User extends BaseTimeEntity {
 
     private String profileImgUrl;
 
-    private String groupName;
+    @ManyToOne
+    @JoinColumn(name = "familyId")
+    private Family family;
 
     private String alarmTime;
 
@@ -59,5 +64,9 @@ public class User extends BaseTimeEntity {
 
     public void deleteAccount() {
         this.status = Status.DELETED;
+    }
+
+    public void setFamily(Family family) {
+        this.family = family;
     }
 }
