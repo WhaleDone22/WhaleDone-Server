@@ -1,8 +1,13 @@
 spring:
+  profiles:
+    default: local
+
+---
+spring:
   datasource:
-    url: jdbc:mysql://whaledone.cpbpd7kl2fj5.ap-northeast-2.rds.amazonaws.com:3306/Whaledone_Dev?serverTimezone=UTC&characterEncoding=UTF-8
-    username: admin
-    password: whaledone1234!
+    url: ENC(Kr8E0OlXtZN9I9S9HOub0IL7TuE3haexd5LmKaEzI8GVCW/tm1CEFYzwd/RQK3Tra6t/tfbthvhW6JHDZFqQrXrUT4Z3wbYN5LPqUVHxTDno0JVnOTnC1v9SBuWnfr/QF9olDZnZAYWhIJvtz7441Om2eqpj6XYQV/dLQSCTiE4sVb4wyP8gwRWu+gvRWbXn)
+    username: ENC(OhuwwEwv/yiitEjNJEaypg==)
+    password: ENC(13pgTJX3wcMivrY26S7+nTS+T0Mnto/u)
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -17,3 +22,37 @@ springdoc:
   swagger-ui:
     operations-sorter: method
   paths-to-match: /api/v1/**
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    password: ${JASYPT_WHALEDONE_PASSWORD}
+
+cloud:
+  aws:
+    stack:
+      auto: false
+    credentials:
+          access-key: ENC(jocpFuhaab7myjgWNJz+V7gpFX2FUFZs/ivVuQjliis=)
+          secret-key: ENC (WJD+YTKXH0bZdqpkE0K7kgmcuJcJCXjFkfse0pcCGFGOJld5VlEm30jseEHtZzteaRoYmaH012g=)
+    region:
+      static: ap-northeast-2
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
