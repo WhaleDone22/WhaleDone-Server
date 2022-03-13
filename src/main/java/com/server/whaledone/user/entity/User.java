@@ -69,4 +69,8 @@ public class User extends BaseTimeEntity {
     public void setFamily(Family family) {
         this.family = family;
     }
+
+    public void changeProfileImg(String profileImgUrl) {
+        this.profileImgUrl = profileImgUrl;
+    }
 }

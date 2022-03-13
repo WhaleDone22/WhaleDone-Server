@@ -4,10 +4,7 @@ import com.server.whaledone.config.response.ResponseService;
 import com.server.whaledone.config.response.result.CommonResult;
 import com.server.whaledone.config.response.result.SingleResult;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
-import com.server.whaledone.user.dto.request.EmailValidRequestDto;
-import com.server.whaledone.user.dto.request.NicknameValidRequestDto;
-import com.server.whaledone.user.dto.request.SignInRequestDto;
-import com.server.whaledone.user.dto.request.SignUpRequestDto;
+import com.server.whaledone.user.dto.request.*;
 import com.server.whaledone.user.dto.response.SignInResponseDto;
 import com.server.whaledone.user.dto.response.SignUpResponseDto;
 import com.server.whaledone.user.dto.response.UserInfoResponseDto;
@@ -30,27 +27,27 @@ public class UserController {
     private final ResponseService responseService;
 
     @Operation(summary = "회원가입 API", description = "회원가입에 필요한 json 데이터를 받아서 저장 후 토큰을 포함한 dto를 리턴한다.")
-    @PostMapping("/sign-up")
+    @PostMapping("/user/sign-up")
     public SingleResult<SignUpResponseDto> signUp(@RequestBody @Valid SignUpRequestDto dto) {
         return responseService.getSingleResult(userService.signUp(dto));
     }
 
     @Operation(summary = "로그인 API", description = "로그인에 필요한 json 데이터(email, password)를 받아서 토큰을 포함한 dto를 리턴한다.")
-    @PostMapping("/sign-in")
+    @PostMapping("/user/sign-in")
     public SingleResult<SignInResponseDto> signIn(@RequestBody @Valid SignInRequestDto dto) {
         return responseService.getSingleResult(userService.signIn(dto));
     }
 
     @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
     @Operation(summary = "회원 조회 API", description = "전달 받은 token을 이용해서 유저 정보 dto를 리턴한다.")
-    @GetMapping("/user")
+    @GetMapping("/users/auth")
     public SingleResult<UserInfoResponseDto> getUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return responseService.getSingleResult(userService.getUserInfo(userDetails));
     }
 
     @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
     @Operation(summary = "회원 탈퇴 API", description = "토큰을 기준으로 회원의 계정 status를 변경한다.")
-    @PatchMapping("/user/status")
+    @PatchMapping("/users/auth/status")
     public CommonResult deleteUserAccount(@AuthenticationPrincipal CustomUserDetails userDetails) {
         userService.deleteUserAccount(userDetails);
         return responseService.getSuccessResult();
@@ -67,6 +64,15 @@ public class UserController {
     @PostMapping("/user/validation/nickname")
     public CommonResult getNicknameValidationStatus(@RequestBody @Valid NicknameValidRequestDto nickName) {
         userService.getNicknameValidationStatus(nickName);
+        return responseService.getSuccessResult();
+    }
+
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
+    @Operation(summary = "프로필 사진 변경 API", description = "presignedURL을 이용해서 저장한 컨텐츠의 접근 URL을 토큰과 함께 전달한다.")
+    @PatchMapping("/users/auth/profile-image")
+    public CommonResult updateUserProfileImage(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                               @RequestBody UpdateProfileImgRequestDto dto) {
+        userService.updateProfileImg(userDetails, dto);
         return responseService.getSuccessResult();
     }
 

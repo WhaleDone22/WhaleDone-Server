@@ -5,10 +5,7 @@ import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.config.security.jwt.JwtTokenProvider;
-import com.server.whaledone.user.dto.request.EmailValidRequestDto;
-import com.server.whaledone.user.dto.request.NicknameValidRequestDto;
-import com.server.whaledone.user.dto.request.SignInRequestDto;
-import com.server.whaledone.user.dto.request.SignUpRequestDto;
+import com.server.whaledone.user.dto.request.*;
 import com.server.whaledone.user.dto.response.SignInResponseDto;
 import com.server.whaledone.user.dto.response.SignUpResponseDto;
 import com.server.whaledone.user.dto.response.UserInfoResponseDto;
@@ -77,8 +74,15 @@ public class UserService {
 
     @Transactional
     public void deleteUserAccount(CustomUserDetails userDetails) {
-        User activeUser = userRepository.findByEmailAndStatus(userDetails.getUser().getEmail(), Status.ACTIVE)
+        User activeUser = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
         activeUser.deleteAccount();
+    }
+
+    @Transactional
+    public void updateProfileImg(CustomUserDetails userDetails, UpdateProfileImgRequestDto dto) {
+        User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+        user.changeProfileImg(dto.getProfileImgUrl());
     }
 }
