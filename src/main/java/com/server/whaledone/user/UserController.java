@@ -76,6 +76,16 @@ public class UserController {
         return responseService.getSuccessResult();
     }
 
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
+    @Operation(summary = "마이페이지 수정 API", description = "국가, 전화번호, 가족 채널명, 알람 여부, 알람 시간을 받아서 업데이트한다." +
+            "채널 명만 바뀌어도 나머지 필드도 기존값과 함께 받는다.")
+    @PatchMapping("/users/auth/information")
+    public CommonResult updateUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                               @RequestBody @Valid UpdateUserInfoRequestDto dto) {
+        userService.updateUserInfo(userDetails, dto);
+        return responseService.getSuccessResult();
+    }
+
     @GetMapping("/test")
     public String test() {
         return "test";
