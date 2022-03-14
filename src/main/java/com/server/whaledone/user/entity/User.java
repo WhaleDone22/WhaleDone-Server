@@ -3,6 +3,7 @@ package com.server.whaledone.user.entity;
 import com.server.whaledone.config.Entity.BaseTimeEntity;
 import com.server.whaledone.config.Entity.Status;
 import com.server.whaledone.family.entity.Family;
+import com.server.whaledone.user.dto.request.UpdateUserInfoRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -68,5 +69,16 @@ public class User extends BaseTimeEntity {
 
     public void setFamily(Family family) {
         this.family = family;
+    }
+
+    public void changeProfileImg(String profileImgUrl) {
+        this.profileImgUrl = profileImgUrl;
+    }
+
+    public void changeUserInfo(UpdateUserInfoRequestDto dto) {
+        this.phoneNumber = dto.getPhoneNumber();
+        this.nation = dto.getNation();
+        this.alarmTime = dto.getAlarmTime();
+        this.alarmStatus = dto.getAlarmStatus();
     }
 }

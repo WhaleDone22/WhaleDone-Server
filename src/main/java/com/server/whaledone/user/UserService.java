@@ -5,10 +5,9 @@ import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.config.security.jwt.JwtTokenProvider;
-import com.server.whaledone.user.dto.request.EmailValidRequestDto;
-import com.server.whaledone.user.dto.request.NicknameValidRequestDto;
-import com.server.whaledone.user.dto.request.SignInRequestDto;
-import com.server.whaledone.user.dto.request.SignUpRequestDto;
+import com.server.whaledone.family.FamilyRepository;
+import com.server.whaledone.family.entity.Family;
+import com.server.whaledone.user.dto.request.*;
 import com.server.whaledone.user.dto.response.SignInResponseDto;
 import com.server.whaledone.user.dto.response.SignUpResponseDto;
 import com.server.whaledone.user.dto.response.UserInfoResponseDto;
@@ -23,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final FamilyRepository familyRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -77,8 +77,25 @@ public class UserService {
 
     @Transactional
     public void deleteUserAccount(CustomUserDetails userDetails) {
-        User activeUser = userRepository.findByEmailAndStatus(userDetails.getUser().getEmail(), Status.ACTIVE)
+        User activeUser = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
         activeUser.deleteAccount();
+    }
+
+    @Transactional
+    public void updateProfileImg(CustomUserDetails userDetails, UpdateProfileImgRequestDto dto) {
+        User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+        user.changeProfileImg(dto.getProfileImgUrl());
+    }
+
+    @Transactional
+    public void updateUserInfo(CustomUserDetails userDetails, UpdateUserInfoRequestDto dto) {
+        User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+        Family family = familyRepository.findById(user.getFamily().getId())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.GROUP_NOT_EXISTS));
+        user.changeUserInfo(dto);
+        family.changeName(dto.getFamilyName());
     }
 }

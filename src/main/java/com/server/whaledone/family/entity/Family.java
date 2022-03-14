@@ -6,6 +6,7 @@ import com.server.whaledone.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class Family extends BaseTimeEntity {
     } // 연관관계 편의 메서드
 
     public void changeName(String familyName) {
-        this.familyName = familyName;
+        this.familyName = familyName.strip();
     }
 
     @Builder

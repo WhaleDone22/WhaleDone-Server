@@ -38,8 +38,16 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.auth0/java-jwt
 	implementation group: 'com.auth0', name: 'java-jwt', version: '3.18.2'
 
+	// AWS s3
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
+
+	// jasypt setting
+	implementation group: 'com.github.ulisesbocchio', name: 'jasypt-spring-boot-starter', version: '3.0.4'
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+	systemProperty 'jasypt.encryptor.password', findProperty("jasypt.encryptor.password")
 }
