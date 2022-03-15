@@ -3,6 +3,7 @@ package com.server.whaledone.user.entity;
 import com.server.whaledone.config.Entity.BaseTimeEntity;
 import com.server.whaledone.config.Entity.Status;
 import com.server.whaledone.family.entity.Family;
+import com.server.whaledone.posts.entity.Posts;
 import com.server.whaledone.user.dto.request.UpdateUserInfoRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +22,7 @@ public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userId")
     private Long id;
 
     private String nickName;
@@ -37,6 +41,9 @@ public class User extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "familyId")
     private Family family;
+
+    @OneToMany(mappedBy = "author")
+    private List<Posts> posts = new ArrayList<>();
 
     private String alarmTime;
 
@@ -80,5 +87,10 @@ public class User extends BaseTimeEntity {
         this.nation = dto.getNation();
         this.alarmTime = dto.getAlarmTime();
         this.alarmStatus = dto.getAlarmStatus();
+    }
+
+    public void upLoadPosts(Posts posts) {
+        posts.assignAuthor(this);
+        this.posts.add(posts);
     }
 }
