@@ -1,5 +1,6 @@
 package com.server.whaledone.posts;
 
+import com.server.whaledone.config.Entity.Status;
 import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
@@ -59,6 +60,7 @@ public class PostsService {
 
     private Map<LocalDate, List<PostsResponseDto>> getPostsMapGroupingByDate(List<Posts> allPosts) {
         return allPosts.stream()
+                .filter(posts -> posts.getStatus() == Status.ACTIVE)
                 .sorted(Comparator.comparing(Posts::getCreatedAt).reversed())
                 .map(PostsResponseDto::new)
                 .collect(Collectors
