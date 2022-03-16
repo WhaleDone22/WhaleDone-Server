@@ -46,4 +46,12 @@ public class PostsController {
     public SingleResult<PostsMapToDateResponseDto> getMyPosts(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return responseService.getSingleResult(postsService.getMyPosts(userDetails));
     }
+
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
+    @Operation(summary = "내 게시글 삭제 API", description = "해당 게시글이 요청자 소유인지 검증 후, 삭제 상태로 변경한다.")
+    @PatchMapping("/users/auth/posts/{postId}")
+    public CommonResult deletePosts(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long postId) {
+        postsService.deletePosts(userDetails, postId);
+        return responseService.getSuccessResult();
+    }
 }

@@ -13,6 +13,7 @@ import com.server.whaledone.user.UserRepository;
 import com.server.whaledone.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -56,6 +57,19 @@ public class PostsService {
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
 
         return new PostsMapToDateResponseDto(getPostsMapGroupingByDate(user.getPosts()));
+    }
+
+    @Transactional
+    public void deletePosts(CustomUserDetails userDetails, Long postId) {
+        User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+        Posts posts = postsRepository.findByIdAndStatus(postId, Status.ACTIVE)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.POSTS_NOT_EXISTS));
+
+        if (user.getId() != posts.getAuthor().getId()) {
+            throw new CustomException(CustomExceptionStatus.POSTS_INVALID_DELETE_REQUEST);
+        }
+        posts.deletePost();
     }
 
     private Map<LocalDate, List<PostsResponseDto>> getPostsMapGroupingByDate(List<Posts> allPosts) {

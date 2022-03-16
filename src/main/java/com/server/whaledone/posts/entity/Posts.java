@@ -47,4 +47,8 @@ public class Posts extends BaseTimeEntity {
     public void assignAuthor(User author) {
         this.author = author;
     }
+
+    public void deletePost() {
+        this.status = Status.DELETED;
+    }
 }
