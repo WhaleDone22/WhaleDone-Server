@@ -50,6 +50,13 @@ public class PostsService {
         return new PostsMapToDateResponseDto(getPostsMapGroupingByDate(allPosts));
     }
 
+    public PostsMapToDateResponseDto getMyPosts(CustomUserDetails userDetails) {
+        User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+
+        return new PostsMapToDateResponseDto(getPostsMapGroupingByDate(user.getPosts()));
+    }
+
     private Map<LocalDate, List<PostsResponseDto>> getPostsMapGroupingByDate(List<Posts> allPosts) {
         return allPosts.stream()
                 .sorted(Comparator.comparing(Posts::getCreatedAt).reversed())

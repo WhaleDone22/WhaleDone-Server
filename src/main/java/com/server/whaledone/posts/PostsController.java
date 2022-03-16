@@ -39,4 +39,11 @@ public class PostsController {
     public SingleResult<PostsMapToDateResponseDto> getFamilyPosts(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return responseService.getSingleResult(postsService.getFamilyPosts(userDetails));
     }
+
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
+    @Operation(summary = "내 일상 조회 API", description = "나의 일상 게시글을 조회한다.")
+    @GetMapping("/users/auth/posts")
+    public SingleResult<PostsMapToDateResponseDto> getMyPosts(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return responseService.getSingleResult(postsService.getMyPosts(userDetails));
+    }
 }
