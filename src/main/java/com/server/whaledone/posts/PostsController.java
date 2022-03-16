@@ -5,6 +5,7 @@ import com.server.whaledone.config.response.result.CommonResult;
 import com.server.whaledone.config.response.result.SingleResult;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.posts.dto.SavePostsRequestDto;
+import com.server.whaledone.posts.dto.UpdatePostsRequestDto;
 import com.server.whaledone.posts.dto.response.PostsMapToDateResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -49,9 +50,19 @@ public class PostsController {
 
     @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
     @Operation(summary = "내 게시글 삭제 API", description = "해당 게시글이 요청자 소유인지 검증 후, 삭제 상태로 변경한다.")
-    @PatchMapping("/users/auth/posts/{postId}")
+    @PatchMapping("/users/auth/posts/{postId}/status")
     public CommonResult deletePosts(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long postId) {
         postsService.deletePosts(userDetails, postId);
+        return responseService.getSuccessResult();
+    }
+
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
+    @Operation(summary = "내 게시글 수정 API", description = "해당 게시글이 요청자 소유인지 검증 후, 게시글 내용을 수정한다.")
+    @PatchMapping("/users/auth/posts/{postId}")
+    public CommonResult updatePosts(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                    @PathVariable Long postId,
+                                    @RequestBody UpdatePostsRequestDto dto) {
+        postsService.updatePosts(userDetails, postId, dto);
         return responseService.getSuccessResult();
     }
 }

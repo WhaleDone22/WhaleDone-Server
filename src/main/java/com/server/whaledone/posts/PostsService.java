@@ -6,6 +6,7 @@ import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.family.entity.Family;
 import com.server.whaledone.posts.dto.SavePostsRequestDto;
+import com.server.whaledone.posts.dto.UpdatePostsRequestDto;
 import com.server.whaledone.posts.dto.response.PostsMapToDateResponseDto;
 import com.server.whaledone.posts.dto.response.PostsResponseDto;
 import com.server.whaledone.posts.entity.Posts;
@@ -67,9 +68,22 @@ public class PostsService {
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.POSTS_NOT_EXISTS));
 
         if (user.getId() != posts.getAuthor().getId()) {
-            throw new CustomException(CustomExceptionStatus.POSTS_INVALID_DELETE_REQUEST);
+            throw new CustomException(CustomExceptionStatus.POSTS_INVALID_REQUEST);
         }
         posts.deletePost();
+    }
+
+    @Transactional
+    public void updatePosts(CustomUserDetails userDetails, Long postId, UpdatePostsRequestDto dto) {
+        User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+        Posts posts = postsRepository.findByIdAndStatus(postId, Status.ACTIVE)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.POSTS_NOT_EXISTS));
+
+        if (user.getId() != posts.getAuthor().getId()) {
+            throw new CustomException(CustomExceptionStatus.POSTS_INVALID_REQUEST);
+        }
+        posts.changePosts(dto);
     }
 
     private Map<LocalDate, List<PostsResponseDto>> getPostsMapGroupingByDate(List<Posts> allPosts) {

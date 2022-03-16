@@ -3,6 +3,7 @@ package com.server.whaledone.posts.entity;
 import com.server.whaledone.config.Entity.BaseTimeEntity;
 import com.server.whaledone.config.Entity.ContentType;
 import com.server.whaledone.config.Entity.Status;
+import com.server.whaledone.posts.dto.UpdatePostsRequestDto;
 import com.server.whaledone.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -50,5 +51,11 @@ public class Posts extends BaseTimeEntity {
 
     public void deletePost() {
         this.status = Status.DELETED;
+    }
+
+    public void changePosts(UpdatePostsRequestDto dto) {
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
+        this.type = dto.getType();
     }
 }
