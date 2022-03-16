@@ -3,12 +3,22 @@ package com.server.whaledone.posts;
 import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
+import com.server.whaledone.family.entity.Family;
 import com.server.whaledone.posts.dto.SavePostsRequestDto;
+import com.server.whaledone.posts.dto.response.PostsMapToDateResponseDto;
+import com.server.whaledone.posts.dto.response.PostsResponseDto;
 import com.server.whaledone.posts.entity.Posts;
 import com.server.whaledone.user.UserRepository;
 import com.server.whaledone.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,5 +35,26 @@ public class PostsService {
         user.upLoadPosts(newPost);
 
         postsRepository.save(newPost);
+    }
+
+    public PostsMapToDateResponseDto getFamilyPosts(CustomUserDetails userDetails) {
+        User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+
+        Family family = user.getFamily();
+
+        List<Posts> allPosts = new ArrayList<>();
+        family.getUsers()
+                .forEach(user1 -> allPosts.addAll(user1.getPosts()));
+
+        return new PostsMapToDateResponseDto(getPostsMapGroupingByDate(allPosts));
+    }
+
+    private Map<LocalDate, List<PostsResponseDto>> getPostsMapGroupingByDate(List<Posts> allPosts) {
+        return allPosts.stream()
+                .sorted(Comparator.comparing(Posts::getCreatedAt).reversed())
+                .map(PostsResponseDto::new)
+                .collect(Collectors
+                        .groupingBy(PostsResponseDto::getCreatedDate));
     }
 }
