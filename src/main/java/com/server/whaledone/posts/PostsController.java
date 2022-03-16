@@ -61,7 +61,7 @@ public class PostsController {
     @PatchMapping("/users/auth/posts/{postId}")
     public CommonResult updatePosts(@AuthenticationPrincipal CustomUserDetails userDetails,
                                     @PathVariable Long postId,
-                                    @RequestBody UpdatePostsRequestDto dto) {
+                                    @RequestBody @Valid UpdatePostsRequestDto dto) {
         postsService.updatePosts(userDetails, postId, dto);
         return responseService.getSuccessResult();
     }
