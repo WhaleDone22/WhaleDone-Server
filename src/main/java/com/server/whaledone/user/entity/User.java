@@ -4,6 +4,7 @@ import com.server.whaledone.config.Entity.BaseTimeEntity;
 import com.server.whaledone.config.Entity.Status;
 import com.server.whaledone.family.entity.Family;
 import com.server.whaledone.posts.entity.Posts;
+import com.server.whaledone.reaction.entity.Reaction;
 import com.server.whaledone.user.dto.request.UpdateUserInfoRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -58,6 +59,9 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @OneToMany(mappedBy = "author")
+    private List<Reaction> reactions = new ArrayList<>();
+
     @Builder
     public User(String nation, String phoneNumber, Boolean alarmStatus, String email, String nickName, String password) {
         this.nation = nation;
@@ -92,5 +96,10 @@ public class User extends BaseTimeEntity {
     public void upLoadPosts(Posts posts) {
         posts.assignAuthor(this);
         this.posts.add(posts);
+    }
+
+    public void writeComment(Reaction reaction) {
+        reaction.assignAuthor(this);
+        this.reactions.add(reaction);
     }
 }
