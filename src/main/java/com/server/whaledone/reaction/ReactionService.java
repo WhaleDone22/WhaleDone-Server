@@ -7,12 +7,17 @@ import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.posts.PostsRepository;
 import com.server.whaledone.posts.entity.Posts;
 import com.server.whaledone.reaction.dto.request.SaveReactionRequestDto;
+import com.server.whaledone.reaction.dto.response.GetReactionsResponseDto;
 import com.server.whaledone.reaction.entity.Reaction;
 import com.server.whaledone.user.UserRepository;
 import com.server.whaledone.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,5 +42,15 @@ public class ReactionService {
 
         // 리액션과 글과 매칭해준다
         reaction.belongTo(posts);
+    }
+
+    public List<GetReactionsResponseDto> getReactions(CustomUserDetails userDetails, Long postId) {
+        Posts posts = postsRepository.findByIdAndStatus(postId, Status.ACTIVE)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.POSTS_NOT_EXISTS));
+
+        return posts.getReactions().stream()
+                .sorted(Comparator.comparing(Reaction::getCreatedAt))
+                .map(GetReactionsResponseDto::new)
+                .collect(Collectors.toList());
     }
 }

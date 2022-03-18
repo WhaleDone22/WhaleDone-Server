@@ -2,9 +2,10 @@ package com.server.whaledone.reaction;
 
 import com.server.whaledone.config.response.ResponseService;
 import com.server.whaledone.config.response.result.CommonResult;
+import com.server.whaledone.config.response.result.MultipleResult;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
-import com.server.whaledone.posts.dto.SavePostsRequestDto;
 import com.server.whaledone.reaction.dto.request.SaveReactionRequestDto;
+import com.server.whaledone.reaction.dto.response.GetReactionsResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,5 +32,13 @@ public class ReactionController {
                                   @RequestBody @Valid SaveReactionRequestDto dto) {
         reactionService.saveReaction(userDetails, postId, dto);
         return responseService.getSuccessResult();
+    }
+
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
+    @Operation(summary = "리액션 조회 API", description = "토큰값과 함께 게시글의 리액션을 조회한다.")
+    @GetMapping("/posts/{postId}/reactions")
+    public MultipleResult<GetReactionsResponseDto> getReactions(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                @PathVariable Long postId) {
+        return responseService.getMultipleResult(reactionService.getReactions(userDetails, postId));
     }
 }
