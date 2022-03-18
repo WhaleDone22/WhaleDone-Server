@@ -4,6 +4,7 @@ import com.server.whaledone.config.Entity.BaseTimeEntity;
 import com.server.whaledone.config.Entity.ContentType;
 import com.server.whaledone.config.Entity.Status;
 import com.server.whaledone.posts.entity.Posts;
+import com.server.whaledone.reaction.dto.request.ChangeReactionRequestDto;
 import com.server.whaledone.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,5 +53,10 @@ public class Reaction extends BaseTimeEntity {
     public void belongTo(Posts post) {
         this.post = post;
         post.getReactions().add(this);
+    }
+
+    public void changeReaction(ChangeReactionRequestDto dto) {
+        this.content = dto.getContent();
+        this.type = dto.getType();
     }
 }

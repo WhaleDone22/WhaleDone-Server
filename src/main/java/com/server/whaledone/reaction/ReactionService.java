@@ -6,6 +6,7 @@ import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.posts.PostsRepository;
 import com.server.whaledone.posts.entity.Posts;
+import com.server.whaledone.reaction.dto.request.ChangeReactionRequestDto;
 import com.server.whaledone.reaction.dto.request.SaveReactionRequestDto;
 import com.server.whaledone.reaction.dto.response.GetReactionsResponseDto;
 import com.server.whaledone.reaction.entity.Reaction;
@@ -49,8 +50,23 @@ public class ReactionService {
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.POSTS_NOT_EXISTS));
 
         return posts.getReactions().stream()
+                .filter(reaction -> reaction.getStatus() == Status.ACTIVE)
                 .sorted(Comparator.comparing(Reaction::getCreatedAt))
                 .map(GetReactionsResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void changeReaction(CustomUserDetails userDetails, Long postId, Long reactionId, ChangeReactionRequestDto dto) {
+        User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+        Reaction reaction = reactionRepository.findByIdAndStatus(reactionId, Status.ACTIVE)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.REACTION_NOT_EXISTS));
+
+        if (user.getId() != reaction.getAuthor().getId()) {
+            throw new CustomException(CustomExceptionStatus.POSTS_INVALID_REQUEST);
+        }
+
+        reaction.changeReaction(dto);
     }
 }
