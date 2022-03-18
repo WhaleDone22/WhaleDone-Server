@@ -69,4 +69,18 @@ public class ReactionService {
 
         reaction.changeReaction(dto);
     }
+
+    @Transactional
+    public void deleteReaction(CustomUserDetails userDetails, Long postId, Long reactionId) {
+        User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+        Reaction reaction = reactionRepository.findByIdAndStatus(reactionId, Status.ACTIVE)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.REACTION_NOT_EXISTS));
+
+        if (user.getId() != reaction.getAuthor().getId()) {
+            throw new CustomException(CustomExceptionStatus.POSTS_INVALID_REQUEST);
+        }
+
+        reaction.deleteReaction();
+    }
 }

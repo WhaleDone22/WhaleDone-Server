@@ -59,4 +59,8 @@ public class Reaction extends BaseTimeEntity {
         this.content = dto.getContent();
         this.type = dto.getType();
     }
+
+    public void deleteReaction() {
+        this.status = Status.DELETED;
+    }
 }

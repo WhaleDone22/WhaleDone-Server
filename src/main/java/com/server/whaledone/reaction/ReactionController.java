@@ -53,4 +53,14 @@ public class ReactionController {
         reactionService.changeReaction(userDetails, postId, reactionId, dto);
         return responseService.getSuccessResult();
     }
+
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
+    @Operation(summary = "리액션 삭제 API", description = "토큰값과 함께 게시글의 리액션을 삭제한다.")
+    @PatchMapping("/posts/{postId}/reactions/{reactionId}/status")
+    public CommonResult deleteReaction(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                       @PathVariable Long postId,
+                                       @PathVariable Long reactionId) {
+        reactionService.deleteReaction(userDetails, postId, reactionId);
+        return responseService.getSuccessResult();
+    }
 }
