@@ -1,31 +1,26 @@
-package com.server.whaledone.posts.entity;
+package com.server.whaledone.reaction.entity;
 
 import com.server.whaledone.config.Entity.BaseTimeEntity;
 import com.server.whaledone.config.Entity.ContentType;
 import com.server.whaledone.config.Entity.Status;
-import com.server.whaledone.posts.dto.UpdatePostsRequestDto;
-import com.server.whaledone.reaction.entity.Reaction;
+import com.server.whaledone.posts.entity.Posts;
+import com.server.whaledone.reaction.dto.request.ChangeReactionRequestDto;
 import com.server.whaledone.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @Entity
-public class Posts extends BaseTimeEntity {
+public class Reaction extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "postId")
+    @Column(name = "reactionId")
     private Long id;
-
-    @Column(length = 500, nullable = false)
-    private String title;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
@@ -40,12 +35,12 @@ public class Posts extends BaseTimeEntity {
     @ManyToOne
     private User author;
 
-    @OneToMany(mappedBy = "post")
-    private List<Reaction> reactions = new ArrayList<>();
+    @JoinColumn(name = "postId")
+    @ManyToOne
+    private Posts post;
 
     @Builder
-    public Posts(String title, String content, ContentType type) {
-        this.title = title;
+    public Reaction(String content, ContentType type) {
         this.content = content;
         this.type = type;
         this.status = Status.ACTIVE;
@@ -55,13 +50,17 @@ public class Posts extends BaseTimeEntity {
         this.author = author;
     }
 
-    public void deletePost() {
-        this.status = Status.DELETED;
+    public void belongTo(Posts post) {
+        this.post = post;
+        post.getReactions().add(this);
     }
 
-    public void changePosts(UpdatePostsRequestDto dto) {
-        this.title = dto.getTitle();
+    public void changeReaction(ChangeReactionRequestDto dto) {
         this.content = dto.getContent();
         this.type = dto.getType();
+    }
+
+    public void deleteReaction() {
+        this.status = Status.DELETED;
     }
 }

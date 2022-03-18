@@ -37,7 +37,11 @@ public enum CustomExceptionStatus {
 
     // Posts
     POSTS_NOT_EXISTS(true, "P001", "해당 게시글은 존재하지 않습니다."),
-    POSTS_INVALID_REQUEST(true, "P002", "글 작성자가 아닙니다.");
+    POSTS_INVALID_REQUEST(true, "P002", "글 작성자가 아닙니다."),
+
+    // Reaction
+    REACTION_NOT_EXISTS(true, "R001", "해당 리액션은 존재하지 않습니다."),
+    REACTION_INVALID_REQUEST(true, "R002", "리액션 작성자가 아닙니다.");
 
     private final boolean responseStatus;
     private final String code;
