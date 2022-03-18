@@ -1,15 +1,18 @@
 package com.server.whaledone.posts;
 
+import com.server.whaledone.config.Entity.ContentType;
 import com.server.whaledone.config.Entity.Status;
 import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.family.entity.Family;
+import com.server.whaledone.posts.dto.ReactionCountDto;
 import com.server.whaledone.posts.dto.SavePostsRequestDto;
 import com.server.whaledone.posts.dto.UpdatePostsRequestDto;
 import com.server.whaledone.posts.dto.response.PostsMapToDateResponseDto;
 import com.server.whaledone.posts.dto.response.PostsResponseDto;
 import com.server.whaledone.posts.entity.Posts;
+import com.server.whaledone.reaction.entity.Reaction;
 import com.server.whaledone.user.UserRepository;
 import com.server.whaledone.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,14 +50,14 @@ public class PostsService {
         family.getUsers()
                 .forEach(user1 -> allPosts.addAll(user1.getPosts()));
 
-        return new PostsMapToDateResponseDto(getPostsMapGroupingByDate(allPosts));
+        return new PostsMapToDateResponseDto(getPostsDtoMapGroupingByDate(allPosts));
     }
 
     public PostsMapToDateResponseDto getMyPosts(CustomUserDetails userDetails) {
         User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
 
-        return new PostsMapToDateResponseDto(getPostsMapGroupingByDate(user.getPosts()));
+        return new PostsMapToDateResponseDto(getPostsDtoMapGroupingByDate(user.getPosts()));
     }
 
     @Transactional
@@ -86,12 +86,42 @@ public class PostsService {
         posts.changePosts(dto);
     }
 
-    private Map<LocalDate, List<PostsResponseDto>> getPostsMapGroupingByDate(List<Posts> allPosts) {
-        return allPosts.stream()
-                .filter(posts -> posts.getStatus() == Status.ACTIVE)
-                .sorted(Comparator.comparing(Posts::getCreatedAt).reversed())
-                .map(PostsResponseDto::new)
-                .collect(Collectors
-                        .groupingBy(PostsResponseDto::getCreatedDate));
+
+    private Map<LocalDate, List<PostsResponseDto>> getPostsDtoMapGroupingByDate(List<Posts> allPosts) {
+        List<PostsResponseDto> result = new ArrayList<>();
+        for (Posts posts : allPosts) {
+            if (posts.getStatus() == Status.ACTIVE) {
+                List<ReactionCountDto> reactionCountListByType = getReactionCountListByType(posts.getReactions());
+                PostsResponseDto postsResponseDto = new PostsResponseDto(posts);
+                postsResponseDto.setReactionCounts(reactionCountListByType);
+                result.add(postsResponseDto);
+            }
+        }
+
+        return result.stream().
+                sorted(Comparator.comparing(PostsResponseDto::getCreatedDate).reversed())
+                .collect(Collectors.groupingBy(PostsResponseDto::getCreatedDate));
+    }
+
+    private List<ReactionCountDto> getReactionCountListByType(List<Reaction> reactions) {
+        List<ReactionCountDto> result = new ArrayList<>();
+
+        Map<ContentType, Long> contentTypeCountMap = new HashMap<>();
+
+        for (ContentType c : ContentType.values()) {
+            contentTypeCountMap.put(c, 0L);
+        }
+
+        for (Reaction reaction : reactions) {
+            contentTypeCountMap.put(reaction.getType(), contentTypeCountMap.get(reaction.getType()) + 1);
+        }
+
+        for (Map.Entry<ContentType, Long> entry : contentTypeCountMap.entrySet()) {
+            result.add(ReactionCountDto.builder()
+                    .type(entry.getKey())
+                    .count(entry.getValue())
+                    .build());
+        }
+        return result;
     }
 }

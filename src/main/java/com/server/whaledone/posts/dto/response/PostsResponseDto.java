@@ -1,13 +1,17 @@
 package com.server.whaledone.posts.dto.response;
 
 import com.server.whaledone.config.Entity.ContentType;
+import com.server.whaledone.posts.dto.ReactionCountDto;
 import com.server.whaledone.posts.entity.Posts;
+import com.server.whaledone.reaction.entity.Reaction;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class PostsResponseDto {
@@ -39,6 +43,9 @@ public class PostsResponseDto {
     @Schema(name = "게시글 type")
     ContentType type;
 
+    @Schema(name = "리액션 개수 리스트")
+    List<ReactionCountDto> reactionCount = new ArrayList<>();
+
     // 리액션 리스트
     @Builder
     public PostsResponseDto(Posts posts) {
@@ -51,5 +58,9 @@ public class PostsResponseDto {
         this.title = posts.getTitle();
         this.contents = posts.getContent();
         this.type = posts.getType();
+    }
+
+    public void setReactionCounts(List<ReactionCountDto> countDtoList) {
+        this.reactionCount = countDtoList;
     }
 }
