@@ -44,20 +44,12 @@ public class FamilyService {
         // 가족 코드 생성 & 메모리 저장소에 저장
         CustomCodeDto invitationCodeDto = certificationManager.createInvitationCode(savedFamily.getId());
         savedFamily.setInvitationCode(invitationCodeDto.getCode());
-        long remainTime = invitationCodeDto.getInfo().getExpiredTime().getTime() - new Date().getTime();
-
-        remainTime /= 1000;
-
-        long second = remainTime % 60;
-        long minute = remainTime / 60;
-        long hour = minute / 60;
-        minute %= 60;
 
         return CreateFamilyResponseDto.builder()
                 .invitationCode(invitationCodeDto.getCode())
-                .remainingValidTimeHour(Long.toString(hour))
-                .remainingValidTimeMinute(Long.toString(minute))
-                .remainingValidTimeSecond(Long.toString(second))
+                .remainingValidTimeHour(invitationCodeDto.getHour())
+                .remainingValidTimeMinute(invitationCodeDto.getMinute())
+                .remainingValidTimeSecond(invitationCodeDto.getSecond())
                 .build();
     }
 

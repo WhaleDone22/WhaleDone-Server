@@ -31,6 +31,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -65,8 +66,6 @@ public class SmsService {
         String sig = makeSignature(time);
         headers.set("x-ncp-apigw-signature-v2", sig); // 위에서 조립한 jsonBody와 헤더를 조립한다.
 
-        System.out.println("sig -> " + sig);
-
         HttpEntity<String> body = new HttpEntity<>(jsonBody, headers);
         System.out.println(body.getBody());
 
@@ -76,7 +75,10 @@ public class SmsService {
 
         SmsResponseDto smsResponseDto = restTemplate.postForObject(
                 new URI("https://sens.apigw.ntruss.com/sms/v2/services/"+config.getServiceId()+"/messages"), body, SmsResponseDto.class);
-        System.out.println(smsResponseDto.getStatusCode());
+
+        smsResponseDto.setMinute(smsCodeDto.getMinute());
+        smsResponseDto.setSecond(smsCodeDto.getSecond());
+
         return smsResponseDto;
     }
 
