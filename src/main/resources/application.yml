@@ -48,6 +48,7 @@ sms:
   serviceId: ENC(MPBlTyioehVlME4NNTstDO1uthn12J59yrIWqFHcJYZPwjekgPmEa74Srlaj8Z5z)
   accessKey: ENC(m/SYmOG/GEfDYeRelvUE8OkN2tDa+tTg4pnezh9Q6Us=)
   secretKey: ENC(rtO5xCkUQ+c9FybgG7ePYgFM+XsUU1QiEfXUjdrSDSXZ0e8c/wM1D3Fk79KyT+weGHAaM3yKmL0=)
+  from: ENC(Nhuw02FTD8upol2UopaXBaBuxOxnf7QY)
 
 ---
 spring:

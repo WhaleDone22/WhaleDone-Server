@@ -10,6 +10,15 @@ public class ApplicationYmlConfig {
     private String serviceId;
     private String accessKey;
     private String secretKey;
+    private String from;
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
 
     public String getServiceId() {
         return serviceId;
