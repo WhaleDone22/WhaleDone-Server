@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum CustomExceptionStatus {
 
     // Common
-    INVALID_INPUT_VALUE(true, "C001", "유효하지 않은 입력입니다."),
+    INVALID_INPUT_VALUE(true, "COM001", "유효하지 않은 입력입니다."),
 
     /**
      * User
@@ -27,9 +27,9 @@ public enum CustomExceptionStatus {
     USER_INVALID_PASSWORD(true, "UP001", "영문 대문자/소문자/숫자 3가지를 포함해서 입력하세요."),
     USER_NOT_MATCHES_PASSWORD(true, "UP002", "일치하지 않는 비밀번호입니다."),
 
-    // InvitationCode
-    INVITATION_EXPIRED_CODE(true, "I001", "만료된 초대코드입니다."),
-    INVITATION_INVALID_CODE(true, "I002", "일치하는 초대코드가 없습니다"),
+    // Code
+    CODE_EXPIRED_DATE(true, "C001", "만료된 초대 코드입니다."),
+    CODE_INVALID_REQUEST(true, "C002", "잘못된 초대 코드입니다."),
 
     //Group
     GROUP_NOT_EXISTS(true, "G001", "해당 가족채널이 존재하지 않습니다."),

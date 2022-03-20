@@ -4,6 +4,8 @@ import com.server.whaledone.certification.entity.CustomCodeDto;
 import com.server.whaledone.certification.entity.CustomCodeInfo;
 import com.server.whaledone.certification.entity.InvitationCodeInfo;
 import com.server.whaledone.certification.entity.SmsCertificationCodeInfo;
+import com.server.whaledone.config.response.exception.CustomException;
+import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -59,8 +61,18 @@ public class CertificationManager {
 
     // 코드 유효 시간 검증 - SMS 인증 : 3분, 가족 초대 코드 : 48시간
     public boolean validateCode(String code) {
+        if(!codeRepository.containsKey(code))
+            throw new CustomException(CustomExceptionStatus.CODE_INVALID_REQUEST);
         return new Date().before(codeRepository.get(code).getExpiredTime());
         // 현재 시각이 코드 만료날짜 전이면 유효한 코드
+    }
+
+    public CustomCodeInfo getCodeInfo(String code) {
+        return codeRepository.get(code);
+    }
+
+    public void deleteCodeInfo(String code) {
+        codeRepository.remove(code);
     }
 
     // 유일한 코드 생성

@@ -2,6 +2,7 @@ package com.server.whaledone.family;
 
 import com.server.whaledone.certification.CertificationManager;
 import com.server.whaledone.certification.entity.CustomCodeDto;
+import com.server.whaledone.certification.entity.InvitationCodeInfo;
 import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
@@ -42,6 +43,7 @@ public class FamilyService {
 
         // 가족 코드 생성 & 메모리 저장소에 저장
         CustomCodeDto invitationCodeDto = certificationManager.createInvitationCode(savedFamily.getId());
+        savedFamily.setInvitationCode(invitationCodeDto.getCode());
         long remainTime = invitationCodeDto.getInfo().getExpiredTime().getTime() - new Date().getTime();
 
         remainTime /= 1000;
@@ -68,15 +70,20 @@ public class FamilyService {
 
     @Transactional
     public void validateInvitationCode(CustomUserDetails userDetails, ValidateInvitationCodeRequestDto dto) {
-//        Family family = familyRepository.findByInvitationCode(dto.getInvitationCode())
-//                .orElseThrow(() -> new CustomException(CustomExceptionStatus.GROUP_CODE_NOT_EXISTS));
+        if (!certificationManager.validateCode(dto.getInvitationCode())) {
+            certificationManager.deleteCodeInfo(dto.getInvitationCode()); // 유효 기간이 지났으므로 지워준다.
+            throw new CustomException(CustomExceptionStatus.CODE_EXPIRED_DATE);
+        }
 
-        // family.getInvitationCode 후 유효시간 체크하기 -> 지났으면 오류
-//
-//        User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
-//                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
-//
-//        family.addMember(user);
+        InvitationCodeInfo codeInfo = (InvitationCodeInfo) certificationManager.getCodeInfo(dto.getInvitationCode());
+
+        User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+
+        Family family = familyRepository.findById(codeInfo.getFamilyId())
+                .orElseThrow(() ->new CustomException(CustomExceptionStatus.GROUP_NOT_EXISTS));
+
+        family.addMember(user);
     }
 
     @Transactional

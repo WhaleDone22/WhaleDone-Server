@@ -26,8 +26,7 @@ public class Family extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    // 추후에 code entity로 변경
-    // private String invitationCode;
+    private String invitationCode;
 
     @OneToMany(mappedBy = "family")
     private List<User> users = new ArrayList<>();
@@ -40,6 +39,10 @@ public class Family extends BaseTimeEntity {
 
     public void changeName(String familyName) {
         this.familyName = familyName.strip();
+    }
+
+    public void setInvitationCode(String code) {
+        this.invitationCode = code;
     }
 
     @Builder
