@@ -2,8 +2,10 @@ package com.server.whaledone.sms;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.server.whaledone.config.response.ResponseService;
+import com.server.whaledone.config.response.result.CommonResult;
 import com.server.whaledone.config.response.result.SingleResult;
 import com.server.whaledone.sms.dto.SendSmsRequestDto;
+import com.server.whaledone.sms.dto.ValidateSmsCodeRequestDto;
 import com.server.whaledone.sms.dto.standard.SmsResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,5 +37,12 @@ public class SmsController {
             throws UnsupportedEncodingException, ParseException, NoSuchAlgorithmException,
             URISyntaxException, InvalidKeyException, JsonProcessingException {
         return responseService.getSingleResult(smsService.sendSms(dto));
+    }
+
+    @Operation(summary = "인증 번호 검증 API", description = "인증 번호를 입력 받아 본인 인증을 진행한다.")
+    @PostMapping("/sms/validation/code")
+    public CommonResult validateCode(@RequestBody @Valid ValidateSmsCodeRequestDto dto) {
+        smsService.validateCode(dto);
+        return responseService.getSuccessResult();
     }
 }

@@ -2,8 +2,14 @@ package com.server.whaledone.sms;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.server.whaledone.certification.CertificationManager;
+import com.server.whaledone.certification.entity.CustomCodeDto;
 import com.server.whaledone.config.ApplicationYmlConfig;
+import com.server.whaledone.config.response.exception.CustomException;
+import com.server.whaledone.config.response.exception.CustomExceptionStatus;
+import com.server.whaledone.family.dto.request.ValidateInvitationCodeRequestDto;
 import com.server.whaledone.sms.dto.SendSmsRequestDto;
+import com.server.whaledone.sms.dto.ValidateSmsCodeRequestDto;
 import com.server.whaledone.sms.dto.standard.MessageDto;
 import com.server.whaledone.sms.dto.standard.SmsRequestDto;
 import com.server.whaledone.sms.dto.standard.SmsResponseDto;
@@ -32,11 +38,14 @@ import java.util.List;
 public class SmsService {
 
     private final ApplicationYmlConfig config;
+    private final CertificationManager certificationManager;
 
     public SmsResponseDto sendSms(SendSmsRequestDto dto) throws ParseException, JsonProcessingException, UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException, URISyntaxException, JsonProcessingException {
         Long time = System.currentTimeMillis();
         List<MessageDto> messages = new ArrayList<>(); // 보내는 사람에게 내용을 보냄.
-        messages.add(new MessageDto(dto.getRecipientPhoneNumber(),dto.getContent())); // content부분이 내용임
+        CustomCodeDto smsCodeDto = certificationManager.createSmsCode(dto.getRecipientPhoneNumber());
+        String content = "[웨일던] 인증번호 " + smsCodeDto.getCode();
+        messages.add(new MessageDto(dto.getRecipientPhoneNumber(),content)); // content부분이 내용임
 
         System.out.println("accessKey = " + config.getAccessKey());
         System.out.println("secretKey = " + config.getSecretKey());
@@ -71,7 +80,16 @@ public class SmsService {
         return smsResponseDto;
     }
 
-    public String makeSignature(Long time) throws UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException {
+    public void validateCode(ValidateSmsCodeRequestDto dto) {
+        if (!certificationManager.validateSmsCode(dto.getSmsCode(), dto.getPhoneNumber())) {
+            throw new CustomException(CustomExceptionStatus.CODE_EXPIRED_DATE);
+        }
+        // 현재 해당 코드가 있는지, 해당 코드의 시간이 유효한지, 해당 코드와 번호가 일치하는지 검증
+        certificationManager.deleteCodeInfo(dto.getSmsCode());
+        // 완료시 메모리에서 제거
+    }
+
+    private String makeSignature(Long time) throws UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException {
         String space = " "; // one space
         String newLine = "\n"; // new line
         String method = "POST"; // method

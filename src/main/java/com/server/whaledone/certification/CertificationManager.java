@@ -59,6 +59,14 @@ public class CertificationManager {
                 .build();
     }
 
+    public boolean validateSmsCode(String code, String phoneNumber) {
+        if (!validateCode(code)) {
+            throw new CustomException(CustomExceptionStatus.CODE_EXPIRED_DATE);
+        }
+        SmsCertificationCodeInfo info = (SmsCertificationCodeInfo) codeRepository.get(code);
+        return info.getPhoneNumber().equals(phoneNumber);
+    }
+
     // 코드 유효 시간 검증 - SMS 인증 : 3분, 가족 초대 코드 : 48시간
     public boolean validateCode(String code) {
         if(!codeRepository.containsKey(code))
