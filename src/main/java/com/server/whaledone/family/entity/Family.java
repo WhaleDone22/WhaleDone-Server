@@ -6,7 +6,6 @@ import com.server.whaledone.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ public class Family extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    // 추후에 code entity로 변경
     private String invitationCode;
 
     @OneToMany(mappedBy = "family")
@@ -43,10 +41,13 @@ public class Family extends BaseTimeEntity {
         this.familyName = familyName.strip();
     }
 
+    public void setInvitationCode(String code) {
+        this.invitationCode = code;
+    }
+
     @Builder
-    Family(String invitationCode) {
+    Family(String familyName) {
         this.familyName = "웨일던, 칭찬하는 가족";
         this.status = Status.ACTIVE;
-        this.invitationCode = invitationCode;
     }
 }

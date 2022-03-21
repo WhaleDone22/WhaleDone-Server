@@ -1,11 +1,16 @@
 package com.server.whaledone.family;
 
+import com.server.whaledone.certification.CertificationManager;
+import com.server.whaledone.certification.entity.CustomCodeDto;
+import com.server.whaledone.certification.entity.CustomCodeInfo;
+import com.server.whaledone.certification.entity.InvitationCodeInfo;
 import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.family.dto.request.UpdateFamilyNameRequestDto;
 import com.server.whaledone.family.dto.request.ValidateInvitationCodeRequestDto;
 import com.server.whaledone.family.dto.response.CreateFamilyResponseDto;
+import com.server.whaledone.family.dto.response.ReIssueInvitationCodeResponseDto;
 import com.server.whaledone.family.dto.response.UsersInFamilyResponseDto;
 import com.server.whaledone.family.entity.Family;
 import com.server.whaledone.user.UserRepository;
@@ -24,30 +29,29 @@ public class FamilyService {
 
     private final FamilyRepository familyRepository;
     private final UserRepository userRepository;
-
-    private long CODE_EXPIRATION_TIME = 48 * 60 * 60 * 1000L; // 1초 * 60(초) * 60(분) * 48(시간) = 48시간
+    private final CertificationManager certificationManager;
 
     @Transactional
     public CreateFamilyResponseDto createFamily(CustomUserDetails userDetails) {
-        // 그룹 코드 생성
-        String invitationCode = "temp";
-        Date date = new Date(System.currentTimeMillis() + CODE_EXPIRATION_TIME);
-        long remainTime = date.getTime() - new Date().getTime();
-
         // 새로운 그룹 생성
         Family newFamily = Family.builder()
-                .invitationCode(invitationCode)
                 .build();
 
         User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
 
         newFamily.addMember(user);
-        familyRepository.save(newFamily);
+        Family savedFamily = familyRepository.save(newFamily);
+
+        // 가족 코드 생성 & 메모리 저장소에 저장
+        CustomCodeDto invitationCodeDto = certificationManager.createInvitationCode(savedFamily.getId());
+        savedFamily.setInvitationCode(invitationCodeDto.getCode());
 
         return CreateFamilyResponseDto.builder()
-                .invitationCode(invitationCode)
-                .remainingValidTime(String.valueOf(remainTime))
+                .invitationCode(invitationCodeDto.getCode())
+                .remainingValidTimeHour(invitationCodeDto.getHour())
+                .remainingValidTimeMinute(invitationCodeDto.getMinute())
+                .remainingValidTimeSecond(invitationCodeDto.getSecond())
                 .build();
     }
 
@@ -60,13 +64,18 @@ public class FamilyService {
 
     @Transactional
     public void validateInvitationCode(CustomUserDetails userDetails, ValidateInvitationCodeRequestDto dto) {
-        Family family = familyRepository.findByInvitationCode(dto.getInvitationCode())
-                .orElseThrow(() -> new CustomException(CustomExceptionStatus.GROUP_CODE_NOT_EXISTS));
+        if (!certificationManager.validateCode(dto.getInvitationCode())) {
+            certificationManager.deleteCodeInfo(dto.getInvitationCode()); // 유효 기간이 지났으므로 지워준다.
+            throw new CustomException(CustomExceptionStatus.CODE_EXPIRED_DATE);
+        }
 
-        // family.getInvitationCode 후 유효시간 체크하기 -> 지났으면 오류
+        InvitationCodeInfo codeInfo = (InvitationCodeInfo) certificationManager.getCodeInfo(dto.getInvitationCode());
 
         User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+
+        Family family = familyRepository.findById(codeInfo.getFamilyId())
+                .orElseThrow(() ->new CustomException(CustomExceptionStatus.GROUP_NOT_EXISTS));
 
         family.addMember(user);
     }
@@ -81,4 +90,23 @@ public class FamilyService {
                 .map(UsersInFamilyResponseDto::new)
                 .collect(Collectors.toList());
     }
-}
+
+    @Transactional
+    public ReIssueInvitationCodeResponseDto reIssueInvitationCode(CustomUserDetails customUserDetails, Long familyId) {
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.GROUP_NOT_EXISTS));
+
+        String invitationCode = family.getInvitationCode();
+
+        // 삭제하고 새로 발급한다.
+        certificationManager.deleteCodeInfo(invitationCode);
+        CustomCodeDto dto = certificationManager.createInvitationCode(familyId);
+        family.setInvitationCode(dto.getCode());
+        return ReIssueInvitationCodeResponseDto.builder()
+                .invitationCode(dto.getCode())
+                .hour(dto.getHour())
+                .minute(dto.getMinute())
+                .second(dto.getSecond())
+                .build();
+        }
+    }

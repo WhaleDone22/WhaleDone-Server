@@ -11,6 +11,12 @@ public class CreateFamilyResponseDto {
     @Schema(example = "초대 코드")
     String invitationCode;
 
-    @Schema(example = "초대 코드 유효 시간(ms 단위) (HH:MM:SS)")
-    String remainingValidTime;
+    @Schema(example = "초대 코드 남은 유효 시간 (HH)")
+    String remainingValidTimeHour;
+
+    @Schema(example = "초대 코드 남은 유효 시간 (MM)")
+    String remainingValidTimeMinute;
+
+    @Schema(example = "초대 코드 남은 유효 시간 (SS)")
+    String remainingValidTimeSecond;
 }
