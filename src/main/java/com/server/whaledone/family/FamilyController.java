@@ -8,6 +8,7 @@ import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.family.dto.request.UpdateFamilyNameRequestDto;
 import com.server.whaledone.family.dto.request.ValidateInvitationCodeRequestDto;
 import com.server.whaledone.family.dto.response.CreateFamilyResponseDto;
+import com.server.whaledone.family.dto.response.ReIssueInvitationCodeResponseDto;
 import com.server.whaledone.family.dto.response.UsersInFamilyResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -59,5 +60,15 @@ public class FamilyController {
     @GetMapping("/families/{familyId}/users")
     public MultipleResult<UsersInFamilyResponseDto> getUsersInFamily(@PathVariable Long familyId) {
         return responseService.getMultipleResult(familyService.getUsersInFamily(familyId));
+    }
+
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
+    @Operation(summary = "가족 초대 코드 재발급 API",
+            description = "다른 구성원을 초대하기 위해 기존 구성원이 초대 코드를 재발급받는다.")
+    @PostMapping("/families/{familyId}/new-code")
+    public SingleResult<ReIssueInvitationCodeResponseDto> reIssueInvitationCode(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long familyId) {
+        return responseService.getSingleResult(familyService.reIssueInvitationCode(userDetails, familyId));
     }
 }

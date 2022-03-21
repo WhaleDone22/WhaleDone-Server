@@ -2,6 +2,7 @@ package com.server.whaledone.family;
 
 import com.server.whaledone.certification.CertificationManager;
 import com.server.whaledone.certification.entity.CustomCodeDto;
+import com.server.whaledone.certification.entity.CustomCodeInfo;
 import com.server.whaledone.certification.entity.InvitationCodeInfo;
 import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
@@ -9,6 +10,7 @@ import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.family.dto.request.UpdateFamilyNameRequestDto;
 import com.server.whaledone.family.dto.request.ValidateInvitationCodeRequestDto;
 import com.server.whaledone.family.dto.response.CreateFamilyResponseDto;
+import com.server.whaledone.family.dto.response.ReIssueInvitationCodeResponseDto;
 import com.server.whaledone.family.dto.response.UsersInFamilyResponseDto;
 import com.server.whaledone.family.entity.Family;
 import com.server.whaledone.user.UserRepository;
@@ -88,4 +90,23 @@ public class FamilyService {
                 .map(UsersInFamilyResponseDto::new)
                 .collect(Collectors.toList());
     }
-}
+
+    @Transactional
+    public ReIssueInvitationCodeResponseDto reIssueInvitationCode(CustomUserDetails customUserDetails, Long familyId) {
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.GROUP_NOT_EXISTS));
+
+        String invitationCode = family.getInvitationCode();
+
+        // 삭제하고 새로 발급한다.
+        certificationManager.deleteCodeInfo(invitationCode);
+        CustomCodeDto dto = certificationManager.createInvitationCode(familyId);
+        family.setInvitationCode(dto.getCode());
+        return ReIssueInvitationCodeResponseDto.builder()
+                .invitationCode(dto.getCode())
+                .hour(dto.getHour())
+                .minute(dto.getMinute())
+                .second(dto.getSecond())
+                .build();
+        }
+    }
