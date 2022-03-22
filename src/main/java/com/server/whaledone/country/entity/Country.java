@@ -16,7 +16,7 @@ public class Country extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "countryId")
-    private String id;
+    private Long id;
 
     // 나라 이름
     private String countryName;
