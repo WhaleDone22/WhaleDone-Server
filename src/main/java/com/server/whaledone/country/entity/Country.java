@@ -35,4 +35,8 @@ public class Country extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "country")
     private List<User> userList;
+
+    public void addUser(User user) {
+        this.userList.add(user);
+    }
 }

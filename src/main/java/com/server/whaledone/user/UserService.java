@@ -5,6 +5,8 @@ import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.config.security.jwt.JwtTokenProvider;
+import com.server.whaledone.country.CountryRepository;
+import com.server.whaledone.country.entity.Country;
 import com.server.whaledone.family.FamilyRepository;
 import com.server.whaledone.family.entity.Family;
 import com.server.whaledone.user.dto.request.*;
@@ -23,6 +25,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final FamilyRepository familyRepository;
+    private final CountryRepository countryRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -31,10 +34,13 @@ public class UserService {
         if (userRepository.findByEmailAndStatus(dto.getEmail(), Status.ACTIVE).isPresent()) {
             throw new CustomException(CustomExceptionStatus.USER_EXISTS_EMAIL);
         }
+        Country country = countryRepository.findByCountryCode(dto.getCountryCode())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.COUNTRY_NOT_EXISTS));
 
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
 
-        User savedUser = userRepository.save(dto.toEntity());
+        User savedUser = userRepository.save(dto.toEntity(country));
+        country.addUser(savedUser); // 해당 나라에 속하는 유저 저장용 (편의 메서드 아님)
         SignUpResponseDto signUpResponseDto = new SignUpResponseDto(savedUser);
         signUpResponseDto.setJwtToken(jwtTokenProvider.createToken(dto.getEmail(), savedUser.getRoleType()));
         return signUpResponseDto;
@@ -50,14 +56,12 @@ public class UserService {
         }
         String token = jwtTokenProvider.createToken(user.getEmail(), user.getRoleType());
 
-        SignInResponseDto result = SignInResponseDto.builder()
+        return SignInResponseDto.builder()
                 .email(user.getEmail())
                 .nickName(user.getNickName())
                 .userId(user.getId())
                 .jwtToken(token)
                 .build();
-
-        return result;
     }
 
     public UserInfoResponseDto getUserInfo(CustomUserDetails userDetails) {
