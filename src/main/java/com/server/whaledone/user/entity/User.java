@@ -2,6 +2,7 @@ package com.server.whaledone.user.entity;
 
 import com.server.whaledone.config.Entity.BaseTimeEntity;
 import com.server.whaledone.config.Entity.Status;
+import com.server.whaledone.country.entity.Country;
 import com.server.whaledone.family.entity.Family;
 import com.server.whaledone.posts.entity.Posts;
 import com.server.whaledone.reaction.entity.Reaction;
@@ -28,8 +29,9 @@ public class User extends BaseTimeEntity {
 
     private String nickName;
 
-    // 추후에 국가 클래스로 변경
-    private String nation;
+    @ManyToOne
+    @JoinColumn(name = "countryId")
+    private Country country;
 
     private String email;
 
@@ -63,8 +65,8 @@ public class User extends BaseTimeEntity {
     private List<Reaction> reactions = new ArrayList<>();
 
     @Builder
-    public User(String nation, String phoneNumber, Boolean alarmStatus, String email, String nickName, String password) {
-        this.nation = nation;
+    public User(Country country, String phoneNumber, Boolean alarmStatus, String email, String nickName, String password) {
+        this.country = country;
         this.phoneNumber = phoneNumber;
         this.alarmStatus = alarmStatus;
         this.email = email;
@@ -88,9 +90,13 @@ public class User extends BaseTimeEntity {
 
     public void changeUserInfo(UpdateUserInfoRequestDto dto) {
         this.phoneNumber = dto.getPhoneNumber();
-        this.nation = dto.getNation();
         this.alarmTime = dto.getAlarmTime();
         this.alarmStatus = dto.getAlarmStatus();
+    }
+
+    public void changeCountry(Country country) {
+        this.country = country;
+        country.getUserList().add(this);
     }
 
     public void upLoadPosts(Posts posts) {
