@@ -1,6 +1,5 @@
 package com.server.whaledone.country.entity;
 
-import com.server.whaledone.config.Entity.BaseTimeEntity;
 import com.server.whaledone.user.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Country extends BaseTimeEntity {
+public class Country{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +22,9 @@ public class Country extends BaseTimeEntity {
 
     // 나라 코드
     private String countryCode;
+
+    // 나라 번호
+    private String countryPrefix;
 
     //위도
     private Double latitude;
