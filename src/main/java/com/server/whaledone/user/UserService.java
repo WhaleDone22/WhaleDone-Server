@@ -99,7 +99,10 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
         Family family = familyRepository.findById(user.getFamily().getId())
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.GROUP_NOT_EXISTS));
+        Country country = countryRepository.findByCountryCode(dto.getCountryCode())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.COUNTRY_NOT_EXISTS));
         user.changeUserInfo(dto);
+        user.changeCountry(country);
         family.changeName(dto.getFamilyName());
     }
 }
