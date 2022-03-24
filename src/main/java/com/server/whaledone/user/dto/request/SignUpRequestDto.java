@@ -26,7 +26,7 @@ public class SignUpRequestDto {
     @Schema(example = "유저 닉네임")
     private String nickName;
 
-    @Schema(example = "국가 코드")
+    @Schema(example = "국가 코드 ex) KR")
     private String countryCode;
 
     @NotBlank

@@ -2,7 +2,6 @@ package com.server.whaledone.family;
 
 import com.server.whaledone.certification.CertificationManager;
 import com.server.whaledone.certification.entity.CustomCodeDto;
-import com.server.whaledone.certification.entity.CustomCodeInfo;
 import com.server.whaledone.certification.entity.InvitationCodeInfo;
 import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
@@ -13,14 +12,17 @@ import com.server.whaledone.family.dto.response.CreateFamilyResponseDto;
 import com.server.whaledone.family.dto.response.ReIssueInvitationCodeResponseDto;
 import com.server.whaledone.family.dto.response.UsersInFamilyResponseDto;
 import com.server.whaledone.family.entity.Family;
+import com.server.whaledone.posts.entity.Posts;
+import com.server.whaledone.reaction.entity.Reaction;
 import com.server.whaledone.user.UserRepository;
 import com.server.whaledone.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,14 +83,25 @@ public class FamilyService {
     }
 
     @Transactional
-    public List<UsersInFamilyResponseDto> getUsersInFamily(Long familyId) {
+    public List<UsersInFamilyResponseDto> getUsersInfoInFamily(CustomUserDetails userDetails, Long familyId) {
+        User authUser = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
         Family family = familyRepository.findById(familyId)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.GROUP_NOT_EXISTS));
+        // 호출자까지 family에 포함되어 있음.
 
-        return family.getUsers()
+        Map<Long, Long> communicationCountMap = getCommunicationCountMap(authUser, family);
+
+        List<UsersInFamilyResponseDto> resultList = family.getUsers()
                 .stream()
                 .map(UsersInFamilyResponseDto::new)
                 .collect(Collectors.toList());
+
+        for (UsersInFamilyResponseDto usersInFamilyResponseDto : resultList) {
+            usersInFamilyResponseDto.setCommunicationCount(communicationCountMap.get(usersInFamilyResponseDto.getId()));
+        } // dto 순회하면서 리액션 결과값 넣어주기
+
+        return resultList;
     }
 
     @Transactional
@@ -109,4 +122,41 @@ public class FamilyService {
                 .second(dto.getSecond())
                 .build();
         }
+
+    /* return 가족 구성원 id, 나와의 소통 횟수
+     * 1. 내 글에 달린 리액션 작성자를 카운팅한다. (내 글에 리액션 단 경우)
+     * 2. 가족 구성원들의 글에 달린 리액션이 내가 작성한 것이면 카운팅한다. (다른 사람 글에 내가 리액션 단 경우)
+     */
+    private Map<Long, Long> getCommunicationCountMap(User authUser, Family family) {
+        Map<Long, Long> reactionCountingMap = new HashMap<>();
+
+        Long authId = authUser.getId();
+
+        List<User> familyUsers = family.getUsers();
+
+        for (User user : familyUsers) {
+            reactionCountingMap.put(user.getId(), 0L);
+        } // init
+
+        for (Posts post : authUser.getPosts()) {
+            for (Reaction reaction : post.getReactions()) {
+                Long communicatorId = reaction.getAuthor().getId();
+                reactionCountingMap.put(communicatorId, reactionCountingMap.get(communicatorId) + 1);
+            } // 내 글 모두를 순회하고, 글에 달린 리액션을 모두 순회한다.
+        } // 내 글에 달려있는 리액션을 쓴 사람과 소통 횟수가 늘어난다.
+
+        for (User familyUser : familyUsers) {
+            if(familyUser.getId() == authId)
+                continue; // 나는 제외
+            for (Posts post : familyUser.getPosts()) {
+                for (Reaction reaction : post.getReactions()) {
+                    Long authorId = reaction.getAuthor().getId();
+                    if (authorId == authId) { // 가족 구성원이 받은 리액션 중 내가 쓴 리액션인 경우
+                        reactionCountingMap.put(familyUser.getId(), reactionCountingMap.get(familyUser.getId()) + 1);
+                    }
+                }
+            }
+        }
+        return reactionCountingMap;
     }
+}
