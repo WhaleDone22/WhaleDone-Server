@@ -26,7 +26,7 @@ public class QuestionController {
 
     @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
     @Operation(summary = "질문 조회 API", description = "카테고리별로 랜덤한 질문을 리턴한다.")
-    @GetMapping("/questions/each-category/question")
+    @GetMapping("/questions")
     public MultipleResult<QuestionResponseDto> getQuestionPerCategory(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return responseService.getMultipleResult(questionService.getQuestionsPerCategory());
     }
