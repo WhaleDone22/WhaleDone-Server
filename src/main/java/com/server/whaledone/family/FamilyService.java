@@ -9,6 +9,7 @@ import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.family.dto.request.UpdateFamilyNameRequestDto;
 import com.server.whaledone.family.dto.request.ValidateInvitationCodeRequestDto;
 import com.server.whaledone.family.dto.response.CreateFamilyResponseDto;
+import com.server.whaledone.family.dto.response.FamilyTimeDiffResponseDto;
 import com.server.whaledone.family.dto.response.ReIssueInvitationCodeResponseDto;
 import com.server.whaledone.family.dto.response.UsersInFamilyResponseDto;
 import com.server.whaledone.family.entity.Family;
@@ -122,6 +123,13 @@ public class FamilyService {
                 .second(dto.getSecond())
                 .build();
         }
+
+    public List<FamilyTimeDiffResponseDto> getFamilyTimeDiff(CustomUserDetails userDetails, Long familyId) {
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.GROUP_NOT_EXISTS));
+
+        return family.getUsers().stream().map(FamilyTimeDiffResponseDto::new).collect(Collectors.toList());
+    }
 
     /* return 가족 구성원 id, 나와의 소통 횟수
      * 1. 내 글에 달린 리액션 작성자를 카운팅한다. (내 글에 리액션 단 경우)
