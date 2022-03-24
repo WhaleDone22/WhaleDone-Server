@@ -44,7 +44,10 @@ public enum CustomExceptionStatus {
     REACTION_INVALID_REQUEST(true, "R002", "리액션 작성자가 아닙니다."),
 
     // Country
-    COUNTRY_NOT_EXISTS(true, "CO001", "해당 국가는 미지원하는 국가입니다.");
+    COUNTRY_NOT_EXISTS(true, "CO001", "해당 국가는 미지원하는 국가입니다."),
+
+    // Question
+    QUESTION_NOT_EXISTS_IN_CATEGORY(true, "Q001", "해당 카테고리의 질문이 존재하지 않습니다.");
 
     private final boolean responseStatus;
     private final String code;
