@@ -12,10 +12,10 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @ToString
 public class UpdateUserInfoRequestDto {
-    // 추후에 국가 클래스로 변경
+
     @NotBlank
-    @Schema(example = "국가 코드")
-    private String nation;
+    @Schema(example = "국가 코드 ex) KR")
+    private String countryCode;
 
     @NotBlank
     @Schema(example = "유저 전화 번호")

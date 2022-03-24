@@ -8,6 +8,7 @@ import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.family.dto.request.UpdateFamilyNameRequestDto;
 import com.server.whaledone.family.dto.request.ValidateInvitationCodeRequestDto;
 import com.server.whaledone.family.dto.response.CreateFamilyResponseDto;
+import com.server.whaledone.family.dto.response.FamilyTimeDiffResponseDto;
 import com.server.whaledone.family.dto.response.ReIssueInvitationCodeResponseDto;
 import com.server.whaledone.family.dto.response.UsersInFamilyResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,8 +59,10 @@ public class FamilyController {
     @Operation(summary = "해당 가족 채널에 있는 가족 구성원 조회 API",
             description = "갖고 있는 familyId를 통해 해당 가족 구성원을 조회한다.")
     @GetMapping("/families/{familyId}/users")
-    public MultipleResult<UsersInFamilyResponseDto> getUsersInFamily(@PathVariable Long familyId) {
-        return responseService.getMultipleResult(familyService.getUsersInFamily(familyId));
+    public MultipleResult<UsersInFamilyResponseDto> getUsersInfoInFamily(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long familyId) {
+        return responseService.getMultipleResult(familyService.getUsersInfoInFamily(userDetails, familyId));
     }
 
     @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
@@ -70,5 +73,15 @@ public class FamilyController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long familyId) {
         return responseService.getSingleResult(familyService.reIssueInvitationCode(userDetails, familyId));
+    }
+
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
+    @Operation(summary = "해당 가족 채널에 있는 가족 구성원 조회 API",
+            description = "갖고 있는 familyId를 통해 해당 가족 구성원의 시차를 조회한다.")
+    @GetMapping("/families/{familyId}/users/time-difference")
+    public MultipleResult<FamilyTimeDiffResponseDto> getFamilyTimeDiff(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long familyId) {
+        return responseService.getMultipleResult(familyService.getFamilyTimeDiff(userDetails, familyId));
     }
 }

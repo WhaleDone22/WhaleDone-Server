@@ -10,9 +10,8 @@ public class UserInfoResponseDto {
     @Schema(example = "유저 닉네임")
     private String nickName;
 
-    // 추후에 국가 클래스로 변경
-    @Schema(example = "국가 코드")
-    private String nation;
+    @Schema(example = "국가 코드 ex) KR")
+    private String countryCode;
 
     @Schema(example = "유저 전화 번호")
     private String phoneNumber;
@@ -31,7 +30,7 @@ public class UserInfoResponseDto {
 
     public UserInfoResponseDto(User user) {
         this.nickName = user.getNickName();
-        this.nation = user.getNation();
+        this.countryCode = user.getCountry().getCountryCode();
         this.phoneNumber = user.getPhoneNumber();
         this.profileImgUrl = user.getProfileImgUrl();
         this.alarmStatus = user.getAlarmStatus();

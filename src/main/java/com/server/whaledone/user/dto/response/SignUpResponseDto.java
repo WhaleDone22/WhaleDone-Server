@@ -18,7 +18,7 @@ public class SignUpResponseDto {
 
     // 추후에 국가 클래스로 변경
     @Schema(example = "국가 코드")
-    private String nation;
+    private String countryCode;
 
     @Schema(example = "유저 전화 번호")
     private String phoneNumber;
@@ -36,7 +36,7 @@ public class SignUpResponseDto {
         this.userId = user.getId();
         this.email = user.getEmail();
         this.nickName = user.getNickName();
-        this.nation = user.getNation();
+        this.countryCode = user.getCountry().getCountryCode();
         this.phoneNumber = user.getPhoneNumber();
         this.profileImgUrl = user.getProfileImgUrl();
         this.alarmStatus = user.getAlarmStatus();

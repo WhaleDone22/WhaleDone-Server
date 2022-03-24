@@ -1,5 +1,6 @@
 package com.server.whaledone.user.dto.request;
 
+import com.server.whaledone.country.entity.Country;
 import com.server.whaledone.user.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -25,9 +26,8 @@ public class SignUpRequestDto {
     @Schema(example = "유저 닉네임")
     private String nickName;
 
-    // 추후에 국가 클래스로 변경
-    @Schema(example = "국가 코드")
-    private String nation;
+    @Schema(example = "국가 코드 ex) KR")
+    private String countryCode;
 
     @NotBlank
     @Length(min = 8)
@@ -44,9 +44,9 @@ public class SignUpRequestDto {
     @Schema(example = "서비스 알람 수신 여부")
     private Boolean alarmStatus;
 
-    public User toEntity() {
+    public User toEntity(Country country) {
         return User.builder()
-                .nation(this.nation)
+                .country(country)
                 .phoneNumber(this.phoneNumber)
                 .alarmStatus(this.alarmStatus)
                 .email(this.email)
