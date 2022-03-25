@@ -1,4 +1,5 @@
 #!/bin/bash
+source = /home/ec2-user/.bashrc
 REPOSITORY=/home/ec2-user/env/WhaleDone-Server
 CURRENT_PORT=$(cat /home/ec2-user/service_url.inc | grep -Po '[0-9]+' | tail -1)
 TARGET_PORT=0
@@ -20,6 +21,6 @@ if [ ! -z ${TARGET_PID} ]; then
   sudo kill ${TARGET_PID}
 fi
 
-nohup java -jar -Dserver.port=${TARGET_PORT} ${REPOSITORY}/build/libs/* > /home/ec2-user/env/nohup.out 2>&1 &
+nohup java -jar -Dserver.port=${TARGET_PORT} -DJASYPT_WHALEDONE_PASSWORD=${JASYPT_WHALEDONE_PASSWORD} ${REPOSITORY}/build/libs/* > /home/ec2-user/env/nohup.out 2>&1 &
 echo "> Now new WAS runs at ${TARGET_PORT}."
 exit 0
