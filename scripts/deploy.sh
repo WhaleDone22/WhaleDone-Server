@@ -1,5 +1,5 @@
 #!/bin/bash
-source=/home/ec2-user/.bashrc
+source=/etc/profile.d/codedeploy.sh
 REPOSITORY=/home/ec2-user/env/WhaleDone-Server
 CURRENT_PORT=$(cat /home/ec2-user/service_url.inc | grep -Po '[0-9]+' | tail -1)
 TARGET_PORT=0
