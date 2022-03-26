@@ -41,11 +41,15 @@ public class SmsService {
     private final ApplicationYmlConfig config;
     private final CertificationManager certificationManager;
 
+    private static final String smsMessage = " 웨일던에서 보내는 인증번호입니다. \n" +
+            "\n" +
+            "* 멀리 떨어진 가족의 일상과 마음을 공유하는 소통서비스, WhaleDone";
+
     public SmsResponseDto sendSms(SendSmsRequestDto dto) throws ParseException, JsonProcessingException, UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException, URISyntaxException, JsonProcessingException {
         Long time = System.currentTimeMillis();
         List<MessageDto> messages = new ArrayList<>(); // 보내는 사람에게 내용을 보냄.
         CustomCodeDto smsCodeDto = certificationManager.createSmsCode(dto.getRecipientPhoneNumber());
-        String content = "[웨일던] 인증번호 " + smsCodeDto.getCode();
+        String content = smsCodeDto.getCode() + smsMessage;
         messages.add(new MessageDto(dto.getRecipientPhoneNumber(),content)); // content부분이 내용임
 
         System.out.println("accessKey = " + config.getAccessKey());
