@@ -7,6 +7,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum CustomExceptionStatus {
 
+    // Server
+    INTERNAL_SERVER_ERROR(true, "SERVER001", "서버에 문제가 발생했어요. 잠시 후 다시 시도하세요."),
+    INVALID_AUTHORIZATION(true, "AUTH001", "해당 페이지에 권한이 없는 사용자입니다. 토큰을 확인해주세요."),
+    INVALID_AUTHENTICATION(true, "AUTH002", "클라이언트 인증이 실패한 사용자입니다."),
+
+
     // Common
     INVALID_INPUT_VALUE(true, "COM001", "유효하지 않은 입력입니다."),
 
