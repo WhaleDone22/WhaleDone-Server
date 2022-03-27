@@ -112,7 +112,7 @@ public class UserService {
     }
 
     @Transactional
-    public void resetPassword(ResetPasswordRequestDto dto) {
+    public void reIssuePassword(ReissuePasswordRequestDto dto) {
         // 비밀번호 재발급을 요청하는 유저의 이메일을 받아서, 유저 정보를 조회한다.
         User user = userRepository.findByEmailAndStatus(dto.getEmail(), Status.ACTIVE)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));

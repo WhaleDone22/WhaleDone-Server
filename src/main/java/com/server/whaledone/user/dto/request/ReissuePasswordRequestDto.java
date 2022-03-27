@@ -8,7 +8,7 @@ import javax.validation.constraints.Email;
 
 @Getter
 @NoArgsConstructor
-public class ResetPasswordRequestDto {
+public class ReissuePasswordRequestDto {
 
     @Email
     @Schema(description = "비밀번호 재발급 메일을 받을 유저 이메일", example = "test@naver.com")

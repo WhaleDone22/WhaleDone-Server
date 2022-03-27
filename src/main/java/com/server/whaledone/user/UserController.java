@@ -88,8 +88,8 @@ public class UserController {
 
     @Operation(summary = "비밀번호 재발급 메일 API", description = "해당 API를 이용해서 메일로 임시 비밀번호를 유저에게 전송한다.")
     @PostMapping("/user/new-password")
-    public CommonResult sendMail(@RequestBody @Valid ResetPasswordRequestDto dto) {
-        userService.resetPassword(dto);
+    public CommonResult sendReIssuePasswordMail(@RequestBody @Valid ReissuePasswordRequestDto dto) {
+        userService.reIssuePassword(dto);
         return responseService.getSuccessResult();
     }
 }
