@@ -84,7 +84,7 @@ public class CertificationManager {
     }
 
     // 유일한 코드 생성
-    private String randomGenerator(int countOfNumber) {
+    public String randomGenerator(int countOfNumber) {
         Random rnd = new Random();
         StringBuffer code = new StringBuffer();
 

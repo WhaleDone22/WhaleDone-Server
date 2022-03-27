@@ -81,13 +81,15 @@ public class UserController {
             "채널 명만 바뀌어도 나머지 필드도 기존값과 함께 받는다.")
     @PatchMapping("/users/auth/information")
     public CommonResult updateUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                               @RequestBody @Valid UpdateUserInfoRequestDto dto) {
+                                       @RequestBody @Valid UpdateUserInfoRequestDto dto) {
         userService.updateUserInfo(userDetails, dto);
         return responseService.getSuccessResult();
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "test";
+    @Operation(summary = "비밀번호 재발급 메일 API", description = "해당 API를 이용해서 메일로 임시 비밀번호를 유저에게 전송한다.")
+    @PostMapping("/user/new-password")
+    public CommonResult sendMail(@RequestBody @Valid ResetPasswordRequestDto dto) {
+        userService.resetPassword(dto);
+        return responseService.getSuccessResult();
     }
 }

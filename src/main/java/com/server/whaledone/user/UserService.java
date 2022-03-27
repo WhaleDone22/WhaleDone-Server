@@ -1,5 +1,6 @@
 package com.server.whaledone.user;
 
+import com.server.whaledone.certification.CertificationManager;
 import com.server.whaledone.config.Entity.Status;
 import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
@@ -9,25 +10,29 @@ import com.server.whaledone.country.CountryRepository;
 import com.server.whaledone.country.entity.Country;
 import com.server.whaledone.family.FamilyRepository;
 import com.server.whaledone.family.entity.Family;
+import com.server.whaledone.mail.MailProvider;
+import com.server.whaledone.mail.MailRequestDto;
 import com.server.whaledone.user.dto.request.*;
 import com.server.whaledone.user.dto.response.SignInResponseDto;
 import com.server.whaledone.user.dto.response.SignUpResponseDto;
 import com.server.whaledone.user.dto.response.UserInfoResponseDto;
 import com.server.whaledone.user.entity.User;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final FamilyRepository familyRepository;
     private final CountryRepository countryRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    private JwtTokenProvider jwtTokenProvider;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final CertificationManager certificationManager;
+    private final MailProvider mailProvider;
 
     // 회원가입
     public SignUpResponseDto signUp(SignUpRequestDto dto) {
@@ -104,5 +109,21 @@ public class UserService {
         user.changeUserInfo(dto);
         user.changeCountry(country);
         family.changeName(dto.getFamilyName());
+    }
+
+    @Transactional
+    public void resetPassword(ResetPasswordRequestDto dto) {
+        // 비밀번호 재발급을 요청하는 유저의 이메일을 받아서, 유저 정보를 조회한다.
+        User user = userRepository.findByEmailAndStatus(dto.getEmail(), Status.ACTIVE)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+
+        // 임시 비밀번호 생성 후 암호화해서 저장
+        String tempPassword = certificationManager.randomGenerator(8);
+        user.resetPassword(bCryptPasswordEncoder.encode(tempPassword));
+
+        mailProvider.mailSend(MailRequestDto.builder()
+                .email(dto.getEmail())
+                .message(tempPassword)
+                .build());
     }
 }
