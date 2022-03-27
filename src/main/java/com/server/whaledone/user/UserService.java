@@ -126,4 +126,13 @@ public class UserService {
                 .message(tempPassword)
                 .build());
     }
+
+    @Transactional
+    public void resetPassword(CustomUserDetails userDetails, ResetPasswordRequestDto dto) {
+        User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+
+        // 변경할 비밀번호를 받아서 reset
+        user.resetPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
+    }
 }

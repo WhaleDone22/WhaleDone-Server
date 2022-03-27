@@ -92,4 +92,13 @@ public class UserController {
         userService.reIssuePassword(dto);
         return responseService.getSuccessResult();
     }
+
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
+    @Operation(summary = "비밀번호 재설정 API", description = "임시 비밀번호 재발급 이후 비밀번호를 재설정한다.")
+    @PostMapping("/user/reset-password")
+    public CommonResult resetPassword(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                      @RequestBody @Valid ResetPasswordRequestDto dto) {
+        userService.resetPassword(userDetails, dto);
+        return responseService.getSuccessResult();
+    }
 }
