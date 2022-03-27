@@ -16,34 +16,34 @@ import java.util.List;
 @Data
 public class PostsResponseDto {
 
-    @Schema(name = "게시글 idx")
+    @Schema(description = "게시글 idx")
     Long id;
 
-    @Schema(name = "게시글 생성 날짜")
+    @Schema(description = "게시글 생성 날짜")
     LocalDate createdDate;
 
-    @Schema(name = "요일")
+    @Schema(description = "요일")
     DayOfWeek displayName;
 
-    @Schema(name = "글 작성자")
+    @Schema(description = "글 작성자")
     String authorName;
 
-    @Schema(name = "작성자 idx")
+    @Schema(description = "작성자 idx")
     Long authorIdx;
 
-    @Schema(name = "작성자 썸네일 URL")
+    @Schema(description = "작성자 썸네일 URL")
     String profileImgUrl;
 
-    @Schema(name = "게시글 제목")
+    @Schema(description = "게시글 제목")
     String title;
 
-    @Schema(name = "게시글 내용")
+    @Schema(description = "게시글 내용")
     String contents;
 
-    @Schema(name = "게시글 type")
+    @Schema(description = "게시글 type")
     ContentType type;
 
-    @Schema(name = "리액션 개수 리스트")
+    @Schema(description = "리액션 개수 리스트")
     List<ReactionCountDto> reactionCount = new ArrayList<>();
 
     // 리액션 리스트

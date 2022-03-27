@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReactionCountDto {
 
-    @Schema(name = "리액션 type")
+    @Schema(description = "리액션 type", example = "TEXT, IMAGE, AUDIO")
     private ContentType type;
 
-    @Schema(name = "개수")
+    @Schema(description = "해당 리액션 개수")
     private Long count;
 
     @Builder

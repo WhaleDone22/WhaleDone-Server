@@ -5,14 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor
-public class EmailValidRequestDto {
+public class ReissuePasswordRequestDto {
 
     @Email
-    @NotBlank
-    @Schema(description = "유저 이메일", example = "test@naver.com")
+    @Schema(description = "비밀번호 재발급 메일을 받을 유저 이메일", example = "test@naver.com")
     private String email;
+
 }

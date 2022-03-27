@@ -108,4 +108,8 @@ public class User extends BaseTimeEntity {
         reaction.assignAuthor(this);
         this.reactions.add(reaction);
     }
+
+    public void resetPassword(String password) {
+        this.password = password;
+    }
 }

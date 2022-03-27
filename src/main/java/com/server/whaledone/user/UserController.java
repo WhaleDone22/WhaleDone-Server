@@ -81,13 +81,24 @@ public class UserController {
             "채널 명만 바뀌어도 나머지 필드도 기존값과 함께 받는다.")
     @PatchMapping("/users/auth/information")
     public CommonResult updateUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                               @RequestBody @Valid UpdateUserInfoRequestDto dto) {
+                                       @RequestBody @Valid UpdateUserInfoRequestDto dto) {
         userService.updateUserInfo(userDetails, dto);
         return responseService.getSuccessResult();
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "test";
+    @Operation(summary = "비밀번호 재발급 메일 API", description = "해당 API를 이용해서 메일로 임시 비밀번호를 유저에게 전송한다.")
+    @PostMapping("/user/new-password")
+    public CommonResult sendReIssuePasswordMail(@RequestBody @Valid ReissuePasswordRequestDto dto) {
+        userService.reIssuePassword(dto);
+        return responseService.getSuccessResult();
+    }
+
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
+    @Operation(summary = "비밀번호 재설정 API", description = "임시 비밀번호 재발급 이후 비밀번호를 재설정한다.")
+    @PostMapping("/user/reset-password")
+    public CommonResult resetPassword(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                      @RequestBody @Valid ResetPasswordRequestDto dto) {
+        userService.resetPassword(userDetails, dto);
+        return responseService.getSuccessResult();
     }
 }

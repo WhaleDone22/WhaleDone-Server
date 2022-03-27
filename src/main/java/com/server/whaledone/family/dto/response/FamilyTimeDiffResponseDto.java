@@ -10,13 +10,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public class FamilyTimeDiffResponseDto {
 
-    @Schema(example = "유저 idx")
+    @Schema(description = "유저 idx")
     private Long id;
 
-    @Schema(example = "국가 코드")
+    @Schema(description = "국가 코드")
     private String countryCode;
 
-    @Schema(name = "한국 기준 시차")
+    @Schema(description = "한국 기준 시차")
     private String timeDiff;
 
     @Builder

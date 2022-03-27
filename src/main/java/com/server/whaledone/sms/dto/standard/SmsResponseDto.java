@@ -14,21 +14,21 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class SmsResponseDto {
 
-    @Schema(name = "요청 결과 ID")
+    @Schema(description = "요청 결과 ID", example = "1")
     private String requestId;
 
-    @Schema(name = "요청 시간")
+    @Schema(description = "요청 시간")
     private LocalDateTime requestTime;
 
-    @Schema(name = "상태 코드")
+    @Schema(description = "상태 코드")
     private String statusCode;
 
-    @Schema(name = "상태명")
+    @Schema(description = "상태명")
     private String statusName;
 
-    @Schema(name = "남은 유효시간 (mm)")
+    @Schema(description = "남은 유효시간", example = "mm")
     private String minute;
 
-    @Schema(name = "남은 유효시간 (ss)")
+    @Schema(description = "남은 유효시간", example = "ss")
     private String second;
 }
