@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SendSmsRequestDto {
 
-    @Schema(name = "국가번호 : default = 82")
+    @Schema(description = "국가번호", example = "82")
     private String countryCode;
 
-    @Schema(name = "수신번호 : -를 제외한 숫자만 입력 가능")
+    @Schema(description = "수신번호", example = "01012345678 (- 제외)")
     private String recipientPhoneNumber;
 }

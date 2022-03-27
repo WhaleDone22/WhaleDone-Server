@@ -14,10 +14,10 @@ import javax.validation.constraints.NotBlank;
 public class SaveReactionRequestDto {
 
     @NotBlank
-    @Schema(name = "리액션 내용 또는 URL")
+    @Schema(description = "리액션 내용 또는 URL")
     private String content;
 
-    @Schema(name = "컨텐츠 유형 : 텍스트 = 0, 이미지 = 1, 오디오 = 2")
+    @Schema(description = "컨텐츠 유형", example = "TEXT, IMAGE, AUDIO")
     private ContentType type;
 
     @Builder

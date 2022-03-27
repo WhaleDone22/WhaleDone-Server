@@ -10,10 +10,10 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class ValidateSmsCodeRequestDto {
     @NotBlank
-    @Schema(name = "인증 번호")
+    @Schema(description = "인증 번호", example = "5jdks")
     private String smsCode;
 
     @NotBlank
-    @Schema(name = "인증하는 회원 전화번호 ex) 01012345678")
+    @Schema(description = "인증하는 회원 전화번호", example = "01012345678")
     private String phoneNumber;
 }

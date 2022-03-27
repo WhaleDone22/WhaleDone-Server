@@ -13,28 +13,28 @@ import lombok.Setter;
 @Setter
 public class UsersInFamilyResponseDto {
 
-    @Schema(example = "유저 idx")
+    @Schema(description = "유저 idx")
     private Long id;
 
-    @Schema(example = "유저 닉네임")
+    @Schema(description = "유저 닉네임")
     private String nickName;
 
-    @Schema(example = "국가 코드")
+    @Schema(description = "국가 코드")
     private String countryCode;
 
-    @Schema(example = "국가 이름")
+    @Schema(description = "국가 이름")
     private String countryName;
 
-    @Schema(name = "위도")
+    @Schema(description = "위도")
     private Double latitude;
 
-    @Schema(name = "경도")
+    @Schema(description = "경도")
     private Double longitude;
 
-    @Schema(example = "유저 프로필 이미지 URL")
+    @Schema(description = "유저 프로필 이미지 URL")
     private String profileImgUrl;
 
-    @Schema(example = "나와 소통횟수 (나 자신은 0)")
+    @Schema(description = "나와 소통횟수 (나 자신은 0)")
     private Long communicationCount;
 
     @Builder

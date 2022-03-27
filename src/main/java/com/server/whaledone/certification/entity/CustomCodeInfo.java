@@ -8,7 +8,7 @@ import java.util.Date;
 @Getter
 public abstract class CustomCodeInfo {
 
-    @Schema(name = "인증 만료 날짜")
+    @Schema(description = "인증 만료 날짜")
     private Date expiredTime;
 
     CustomCodeInfo(Date expiredTime) {

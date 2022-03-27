@@ -13,6 +13,6 @@ public class EmailValidRequestDto {
 
     @Email
     @NotBlank
-    @Schema(example = "유저 이메일")
+    @Schema(description = "유저 이메일", example = "test@naver.com")
     private String email;
 }

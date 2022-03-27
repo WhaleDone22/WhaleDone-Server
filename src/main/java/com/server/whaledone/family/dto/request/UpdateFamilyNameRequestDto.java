@@ -13,6 +13,6 @@ public class UpdateFamilyNameRequestDto {
 
     @NotBlank
     @Length(max = 10)
-    @Schema(name = "변경될 가족 채널 이름")
+    @Schema(description = "변경될 가족 채널 이름")
     private String updateName;
 }

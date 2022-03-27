@@ -11,25 +11,25 @@ import java.time.LocalDateTime;
 @Data
 public class GetReactionsResponseDto {
 
-    @Schema(name = "리액션 idx")
+    @Schema(description = "리액션 idx")
     Long id;
 
-    @Schema(name = "리액션 생성 날짜")
+    @Schema(description = "리액션 생성 날짜")
     LocalDateTime createdDate;
 
-    @Schema(name = "리액션 작성자")
+    @Schema(description = "리액션 작성자")
     String authorName;
 
-    @Schema(name = "작성자 idx")
+    @Schema(description = "작성자 idx")
     Long authorIdx;
 
-    @Schema(name = "작성자 썸네일 URL")
+    @Schema(description = "작성자 썸네일 URL")
     String profileImgUrl;
 
-    @Schema(name = "리액션 내용 : text or URL")
+    @Schema(description = "리액션 내용", example = "text 또는 url")
     String contents;
 
-    @Schema(name = "리액션 type")
+    @Schema(description = "리액션 type", example = "TEXT, IMAGE, AUDIO")
     ContentType type;
 
     @Builder

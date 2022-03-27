@@ -11,13 +11,13 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class UpdatePostsRequestDto {
     @NotBlank
-    @Schema(name = "피드 제목")
+    @Schema(description = "피드 제목")
     private String title;
 
     @NotBlank
-    @Schema(name = "텍스트 내용 또는 URL")
+    @Schema(description = "텍스트 내용 또는 URL")
     private String content;
 
-    @Schema(name = "컨텐츠 유형 : 텍스트 = 0, 이미지 = 1, 오디오 = 2")
+    @Schema(description = "컨텐츠 유형", example = "TEXT, IMAGE, AUDIO")
     private ContentType type;
 }

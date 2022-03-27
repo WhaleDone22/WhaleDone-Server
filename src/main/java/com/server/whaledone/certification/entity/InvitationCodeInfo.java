@@ -9,7 +9,7 @@ import java.util.Date;
 @Getter
 public class InvitationCodeInfo extends CustomCodeInfo {
 
-    @Schema(name = "가족 id")
+    @Schema(description = "가족 id")
     private Long familyId;
 
     @Builder

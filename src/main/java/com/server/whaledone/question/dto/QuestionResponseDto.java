@@ -11,10 +11,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public class QuestionResponseDto {
 
-    @Schema(name = "질문 카테고리")
+    @Schema(description = "질문 카테고리")
     private QuestionCategory category;
 
-    @Schema(name = "질문 내용")
+    @Schema(description = "질문 내용")
     private String content;
 
     @Builder

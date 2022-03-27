@@ -11,6 +11,6 @@ import javax.validation.constraints.NotBlank;
 public class PresignedUrlRequestDto {
 
     @NotBlank
-    @Schema(name = "파일 이름")
+    @Schema(description = "파일 이름")
     private String fileName;
 }

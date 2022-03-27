@@ -8,6 +8,6 @@ import lombok.Data;
 @Builder
 public class PresignedUrlResponseDto {
 
-    @Schema(name = "presignedUrl")
+    @Schema(description = "presignedUrl")
     private String presignedUrl;
 }

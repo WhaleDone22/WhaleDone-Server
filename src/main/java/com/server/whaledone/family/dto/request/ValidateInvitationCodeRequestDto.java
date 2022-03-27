@@ -11,6 +11,6 @@ import javax.validation.constraints.NotBlank;
 public class ValidateInvitationCodeRequestDto {
 
     @NotBlank
-    @Schema(name = "초대 코드")
+    @Schema(description = "초대 코드")
     private String invitationCode;
 }

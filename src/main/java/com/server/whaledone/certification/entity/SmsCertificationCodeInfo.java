@@ -9,7 +9,7 @@ import java.util.Date;
 @Getter
 public class SmsCertificationCodeInfo extends CustomCodeInfo {
 
-    @Schema(name = "전화번호")
+    @Schema(description = "전화번호")
     private String phoneNumber;
 
     @Builder

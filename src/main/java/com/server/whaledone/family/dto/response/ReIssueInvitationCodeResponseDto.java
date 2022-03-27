@@ -7,16 +7,16 @@ import lombok.Getter;
 @Getter
 public class ReIssueInvitationCodeResponseDto {
 
-    @Schema(name = "초대 코드")
+    @Schema(description = "초대 코드")
     String invitationCode;
     
-    @Schema(name = "남은 시간")
+    @Schema(description = "남은 시간")
     String hour;
 
-    @Schema(name = "남은 분")
+    @Schema(description = "남은 분", example = "mm")
     String minute;
 
-    @Schema(name = "남은 초")
+    @Schema(description = "남은 초", example = "ss")
     String second;
 
     @Builder
