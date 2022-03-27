@@ -15,7 +15,7 @@ public class MailProvider {
 
     public void mailSend(MailRequestDto dto) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(dto.getAddress());
+        message.setTo(dto.getEmail());
         message.setSubject(mailTitle);
         String tempPassword = dto.getMessage();
         message.setText("임시 비밀번호 입니다 : " + tempPassword);

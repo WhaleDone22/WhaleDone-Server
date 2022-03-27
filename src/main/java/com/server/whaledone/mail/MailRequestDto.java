@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 public class MailRequestDto {
 
     @Schema(description = "메일 받을 주소")
-    private String address;
+    private String email;
 
     @Schema(description = "메일 내용")
     private String message;
 
     @Builder
-    public MailRequestDto(String address, String message) {
-        this.address = address;
+    public MailRequestDto(String email, String message) {
+        this.email = email;
         this.message = message;
     }
 }
