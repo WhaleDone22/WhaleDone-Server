@@ -76,7 +76,7 @@ public class FamilyController {
     }
 
     @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
-    @Operation(summary = "해당 가족 채널에 있는 가족 구성원 조회 API",
+    @Operation(summary = "해당 채널의 가족 구성원 시차 조회 API",
             description = "갖고 있는 familyId를 통해 해당 가족 구성원의 시차를 조회한다.")
     @GetMapping("/families/{familyId}/users/time-difference")
     public MultipleResult<FamilyTimeDiffResponseDto> getFamilyTimeDiff(
