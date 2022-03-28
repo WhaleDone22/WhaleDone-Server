@@ -56,6 +56,8 @@ public class UserService {
         User user = userRepository.findByEmailAndStatus(dto.getEmail(), Status.ACTIVE)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS_EMAIL));
 
+        boolean hasFamily = (user.getFamily() != null);
+
         if (!bCryptPasswordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new CustomException(CustomExceptionStatus.USER_NOT_MATCHES_PASSWORD);
         }
@@ -66,6 +68,7 @@ public class UserService {
                 .nickName(user.getNickName())
                 .userId(user.getId())
                 .jwtToken(token)
+                .hasFamily(hasFamily)
                 .build();
     }
 

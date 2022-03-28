@@ -8,15 +8,18 @@ import lombok.Data;
 @Builder
 public class SignInResponseDto {
 
-    @Schema(example = "유저 db id")
+    @Schema(description = "유저 id")
     private Long userId;
 
-    @Schema(example = "유저 이메일")
+    @Schema(description = "유저 이메일")
     private String email;
 
-    @Schema(example = "유저 닉네임")
+    @Schema(description = "유저 닉네임")
     private String nickName;
 
-    @Schema(example = "유저 access token")
+    @Schema(description = "유저 access token")
     private String jwtToken;
+
+    @Schema(description = "가족 유무", example = "true/false")
+    private boolean hasFamily;
 }
