@@ -7,8 +7,8 @@ import com.server.whaledone.certification.entity.CustomCodeDto;
 import com.server.whaledone.config.ApplicationYmlConfig;
 import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
-import com.server.whaledone.family.dto.request.ValidateInvitationCodeRequestDto;
 import com.server.whaledone.sms.dto.SendSmsRequestDto;
+import com.server.whaledone.sms.dto.SmsType;
 import com.server.whaledone.sms.dto.ValidateSmsCodeRequestDto;
 import com.server.whaledone.sms.dto.standard.MessageDto;
 import com.server.whaledone.sms.dto.standard.SmsRequestDto;
@@ -31,7 +31,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -41,22 +40,48 @@ public class SmsService {
     private final ApplicationYmlConfig config;
     private final CertificationManager certificationManager;
 
-    private static final String smsMessage = " 웨일던에서 보내는 인증번호입니다. \n" +
+    private static final String SMS_SIGNUP_MESSAGE = " 웨일던에서 보내는 인증번호입니다. \n" +
             "\n" +
             "* 멀리 떨어진 가족의 일상과 마음을 공유하는 소통서비스, WhaleDone";
 
-    public SmsResponseDto sendSms(SendSmsRequestDto dto) throws ParseException, JsonProcessingException, UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException, URISyntaxException, JsonProcessingException {
+    private static final String SMS_PW_MESSAGE_PREFIX = "괜찮아요, 저희도 가끔 잊곤 해요 :)\n" +
+            "\n" +
+            "웨일던에서 보낸 임시 비밀번호 \n[ ";
+
+    private static final String SMS_PW_MESSAGE_SUFFIX = " ]를 입력하고, 비밀번호를 다시 설정하세요." +
+            "\n" +
+            "* 멀리 떨어진 가족의 일상과 마음을 공유하는 소통 서비스, WhaleDone";
+
+    public SmsResponseDto sendSignUpSms(SendSmsRequestDto dto) throws ParseException, JsonProcessingException, UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException, URISyntaxException, JsonProcessingException {
+        CustomCodeDto smsCodeDto =  certificationManager.createSmsCode(dto.getRecipientPhoneNumber());
+
+        SmsResponseDto smsResponseDto = sendSms(dto.getSmsType(), dto.getCountryCode(), dto.getRecipientPhoneNumber(), smsCodeDto.getCode());
+
+        smsResponseDto.setMinute(smsCodeDto.getMinute());
+        smsResponseDto.setSecond(smsCodeDto.getSecond());
+
+        return smsResponseDto;
+    }
+
+    public void sendPWSms(SendSmsRequestDto dto, String tempPassword) throws URISyntaxException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException {
+        sendSms(dto.getSmsType(), dto.getCountryCode(), dto.getRecipientPhoneNumber(), tempPassword);
+    }
+
+
+    public SmsResponseDto sendSms(SmsType smsType, String countryCode, String phoneNumber, String content) throws URISyntaxException, JsonProcessingException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
         Long time = System.currentTimeMillis();
         List<MessageDto> messages = new ArrayList<>(); // 보내는 사람에게 내용을 보냄.
-        CustomCodeDto smsCodeDto = certificationManager.createSmsCode(dto.getRecipientPhoneNumber());
-        String content = smsCodeDto.getCode() + smsMessage;
-        messages.add(new MessageDto(dto.getRecipientPhoneNumber(),content)); // content부분이 내용임
+        String message = "";
+        if (smsType == SmsType.SIGNUP) {
+            message += "[ " + content + " ]" + SMS_SIGNUP_MESSAGE;
+        } else if (smsType == SmsType.PW) {
+            message += SMS_PW_MESSAGE_PREFIX + content + SMS_PW_MESSAGE_SUFFIX;
+        }
 
-        System.out.println("accessKey = " + config.getAccessKey());
-        System.out.println("secretKey = " + config.getSecretKey());
+        messages.add(new MessageDto(phoneNumber, message)); // content부분이 내용임
 
         // 전체 json에 대해 메시지를 만든다.
-        SmsRequestDto smsRequestDto = new SmsRequestDto("SMS", "COMM", dto.getCountryCode(), config.getFrom(), "내용", messages);
+        SmsRequestDto smsRequestDto = new SmsRequestDto("LMS", "COMM", countryCode, config.getFrom(), "내용", messages);
 
         // 쌓아온 바디를 json 형태로 변환시켜준다.
         ObjectMapper objectMapper = new ObjectMapper();
@@ -71,19 +96,13 @@ public class SmsService {
         headers.set("x-ncp-apigw-signature-v2", sig); // 위에서 조립한 jsonBody와 헤더를 조립한다.
 
         HttpEntity<String> body = new HttpEntity<>(jsonBody, headers);
-        System.out.println(body.getBody());
 
         // restTemplate로 post 요청을 보낸다. 별 일 없으면 202 코드 반환된다.
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
 
-        SmsResponseDto smsResponseDto = restTemplate.postForObject(
-                new URI("https://sens.apigw.ntruss.com/sms/v2/services/"+config.getServiceId()+"/messages"), body, SmsResponseDto.class);
-
-        smsResponseDto.setMinute(smsCodeDto.getMinute());
-        smsResponseDto.setSecond(smsCodeDto.getSecond());
-
-        return smsResponseDto;
+        return restTemplate.postForObject(
+                new URI("https://sens.apigw.ntruss.com/sms/v2/services/" + config.getServiceId() + "/messages"), body, SmsResponseDto.class);
     }
 
     public void validateCode(ValidateSmsCodeRequestDto dto) {

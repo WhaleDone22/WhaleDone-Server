@@ -36,7 +36,7 @@ public class SmsController {
     public SingleResult<SmsResponseDto> sendSMS(@RequestBody @Valid SendSmsRequestDto dto)
             throws UnsupportedEncodingException, ParseException, NoSuchAlgorithmException,
             URISyntaxException, InvalidKeyException, JsonProcessingException {
-        return responseService.getSingleResult(smsService.sendSms(dto));
+        return responseService.getSingleResult(smsService.sendSignUpSms(dto));
     }
 
     @Operation(summary = "인증 번호 검증 API", description = "인증 번호를 입력 받아 본인 인증을 진행한다.")
