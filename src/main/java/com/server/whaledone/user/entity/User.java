@@ -74,6 +74,7 @@ public class User extends BaseTimeEntity {
         this.password = password;
         this.roleType = RoleType.ROLE_USER;
         this.status = Status.ACTIVE;
+        this.profileImgUrl = "https://whaledone-static-contents.s3.ap-northeast-2.amazonaws.com/defaultImage.png";
     }
 
     public void deleteAccount() {
