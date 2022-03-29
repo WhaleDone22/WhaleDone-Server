@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class PresignedUrlResponseDto {
+public class S3UploadResponseDto {
 
-    @Schema(description = "presignedUrl")
-    private String presignedUrl;
+    @Schema(description = "S3 URL")
+    private String url;
 }
