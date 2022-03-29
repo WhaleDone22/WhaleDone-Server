@@ -26,7 +26,6 @@ public class UpdateUserInfoRequestDto {
     @Schema(example = "가족 채널 명")
     private String familyName;
 
-    @NotBlank
     @Schema(example = "서비스 알람 수신 여부")
     private Boolean alarmStatus;
 
