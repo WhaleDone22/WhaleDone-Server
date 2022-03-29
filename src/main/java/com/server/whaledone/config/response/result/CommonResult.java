@@ -8,12 +8,12 @@ import lombok.Setter;
 @Setter
 public class CommonResult {
 
-    @Schema(example = "응답 성공여부 : ex) true / false")
+    @Schema(description = "응답 성공여부", example = "true / false")
     private boolean responseSuccess;
 
-    @Schema(example = "응답 코드 번호 : ex) C001")
+    @Schema(description = "응답 코드 번호", example = "C001")
     private String code;
 
-    @Schema(example = "응답 메세지")
+    @Schema(description = "응답 메세지")
     private String message;
 }

@@ -38,7 +38,7 @@ public class SignUpRequestDto {
     @Schema(description = "유저 전화번호", example = "01012345678 (-제외)")
     private String phoneNumber;
 
-    @Schema(example = "서비스 알람 수신 여부")
+    @Schema(description = "서비스 알람 수신 여부")
     private Boolean alarmStatus;
 
     public User toEntity(Country country) {
