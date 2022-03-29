@@ -16,7 +16,7 @@ on:
 env:
   S3_BUCKET_NAME: whaledone-server-dev
   PROJECT_NAME: WhaleDone-Server
-  RESOURCE_PATH: ./src/main/resources/application.yaml
+  RESOURCE_PATH: ./src/main/resources/application.yml
 
 jobs:
   build:
