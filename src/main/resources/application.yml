@@ -43,13 +43,12 @@ jasypt:
 
 cloud:
   aws:
-    stack:
-      auto: false
     credentials:
-          access-key: ENC(jocpFuhaab7myjgWNJz+V7gpFX2FUFZs/ivVuQjliis=)
-          secret-key: ENC (WJD+YTKXH0bZdqpkE0K7kgmcuJcJCXjFkfse0pcCGFGOJld5VlEm30jseEHtZzteaRoYmaH012g=)
+      instanceProfile: true
     region:
       static: ap-northeast-2
+    stack:
+      auto: false
 
 logging:
   level:
