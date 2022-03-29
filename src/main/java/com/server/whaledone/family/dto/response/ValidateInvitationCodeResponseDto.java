@@ -9,9 +9,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Builder
 public class ValidateInvitationCodeResponseDto {
 
     @Schema(description = "가족 idx")
     private Long familyId;
+
+    @Builder
+    public ValidateInvitationCodeResponseDto(Long familyId) {
+        this.familyId = familyId;
+    }
 }
