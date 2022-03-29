@@ -8,10 +8,7 @@ import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.family.dto.request.UpdateFamilyNameRequestDto;
 import com.server.whaledone.family.dto.request.ValidateInvitationCodeRequestDto;
-import com.server.whaledone.family.dto.response.CreateFamilyResponseDto;
-import com.server.whaledone.family.dto.response.FamilyTimeDiffResponseDto;
-import com.server.whaledone.family.dto.response.ReIssueInvitationCodeResponseDto;
-import com.server.whaledone.family.dto.response.UsersInFamilyResponseDto;
+import com.server.whaledone.family.dto.response.*;
 import com.server.whaledone.family.entity.Family;
 import com.server.whaledone.posts.entity.Posts;
 import com.server.whaledone.reaction.entity.Reaction;
@@ -66,7 +63,7 @@ public class FamilyService {
     }
 
     @Transactional
-    public void validateInvitationCode(CustomUserDetails userDetails, ValidateInvitationCodeRequestDto dto) {
+    public ValidateInvitationCodeResponseDto validateInvitationCode(CustomUserDetails userDetails, ValidateInvitationCodeRequestDto dto) {
         if (!certificationManager.validateCode(dto.getInvitationCode())) {
             certificationManager.deleteCodeInfo(dto.getInvitationCode()); // 유효 기간이 지났으므로 지워준다.
             throw new CustomException(CustomExceptionStatus.CODE_EXPIRED_DATE);
@@ -81,6 +78,10 @@ public class FamilyService {
                 .orElseThrow(() ->new CustomException(CustomExceptionStatus.GROUP_NOT_EXISTS));
 
         family.addMember(user);
+
+        return ValidateInvitationCodeResponseDto.builder()
+                .familyId(family.getId())
+                .build();
     }
 
     @Transactional

@@ -20,6 +20,9 @@ public class SignInResponseDto {
     @Schema(description = "유저 access token")
     private String jwtToken;
 
+    @Schema(description = "가족 idx", example = "가족이 없으면 -1")
+    private Long familyId;
+
     @Schema(description = "가족 유무", example = "true/false")
     private boolean hasFamily;
 }

@@ -64,7 +64,13 @@ public class UserService {
         User user = userRepository.findByEmailAndStatus(dto.getEmail(), Status.ACTIVE)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS_EMAIL));
 
-        boolean hasFamily = (user.getFamily() != null);
+        boolean hasFamily = false;
+        Long familyId = -1L;
+
+        if (user.getFamily() != null) {
+            hasFamily = true;
+            familyId = user.getFamily().getId();
+        }
 
         if (!bCryptPasswordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new CustomException(CustomExceptionStatus.USER_NOT_MATCHES_PASSWORD);
@@ -77,6 +83,7 @@ public class UserService {
                 .userId(user.getId())
                 .jwtToken(token)
                 .hasFamily(hasFamily)
+                .familyId(familyId)
                 .build();
     }
 

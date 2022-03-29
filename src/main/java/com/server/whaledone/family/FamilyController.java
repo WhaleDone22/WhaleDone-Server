@@ -7,10 +7,7 @@ import com.server.whaledone.config.response.result.SingleResult;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.family.dto.request.UpdateFamilyNameRequestDto;
 import com.server.whaledone.family.dto.request.ValidateInvitationCodeRequestDto;
-import com.server.whaledone.family.dto.response.CreateFamilyResponseDto;
-import com.server.whaledone.family.dto.response.FamilyTimeDiffResponseDto;
-import com.server.whaledone.family.dto.response.ReIssueInvitationCodeResponseDto;
-import com.server.whaledone.family.dto.response.UsersInFamilyResponseDto;
+import com.server.whaledone.family.dto.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,10 +46,9 @@ public class FamilyController {
     @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
     @Operation(summary = "가족 채널 초대 코드 검증 API", description = "초대 코드를 입력받아서 해당 가족 그룹에 유저를 추가한다.")
     @PatchMapping("/family/validation/invitationCode")
-    public CommonResult validateInvitationCode(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                               @RequestBody ValidateInvitationCodeRequestDto dto) {
-        familyService.validateInvitationCode(userDetails, dto);
-        return responseService.getSuccessResult();
+    public SingleResult<ValidateInvitationCodeResponseDto> validateInvitationCode
+            (@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody ValidateInvitationCodeRequestDto dto) {
+        return responseService.getSingleResult(familyService.validateInvitationCode(userDetails, dto));
     }
 
     @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
