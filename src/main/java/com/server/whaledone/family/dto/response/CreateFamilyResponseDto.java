@@ -19,4 +19,7 @@ public class CreateFamilyResponseDto {
 
     @Schema(description = "초대 코드 남은 유효 시간", example = "SS")
     String remainingValidTimeSecond;
+
+    @Schema(description = "생성된 가족 id")
+    Long familyId;
 }

@@ -52,6 +52,7 @@ public class FamilyService {
                 .remainingValidTimeHour(invitationCodeDto.getHour())
                 .remainingValidTimeMinute(invitationCodeDto.getMinute())
                 .remainingValidTimeSecond(invitationCodeDto.getSecond())
+                .familyId(savedFamily.getId())
                 .build();
     }
 
