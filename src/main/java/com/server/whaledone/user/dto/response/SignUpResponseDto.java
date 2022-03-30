@@ -7,29 +7,28 @@ import lombok.Data;
 @Data
 public class SignUpResponseDto {
 
-    @Schema(example = "유저 db id")
+    @Schema(description = "유저 db id")
     private Long userId;
 
-    @Schema(example = "유저 이메일")
+    @Schema(description = "유저 이메일")
     private String email;
 
-    @Schema(example = "유저 닉네임")
+    @Schema(description = "유저 닉네임")
     private String nickName;
 
-    // 추후에 국가 클래스로 변경
-    @Schema(example = "국가 코드")
+    @Schema(description = "국가 코드")
     private String countryCode;
 
-    @Schema(example = "유저 전화 번호")
+    @Schema(description = "유저 전화 번호")
     private String phoneNumber;
 
-    @Schema(example = "유저 프로필 이미지 URL")
+    @Schema(description = "유저 프로필 이미지 URL")
     private String profileImgUrl;
 
-    @Schema(example = "서비스 알람 수신 여부")
+    @Schema(description = "서비스 알람 수신 여부")
     private Boolean alarmStatus;
 
-    @Schema(example = "유저 access token")
+    @Schema(description = "유저 access token")
     private String jwtToken;
 
     public SignUpResponseDto(User user) {

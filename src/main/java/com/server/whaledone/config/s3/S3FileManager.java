@@ -1,15 +1,14 @@
 package com.server.whaledone.config.s3;
 
-import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URL;
-import java.util.Date;
+import java.io.IOException;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -17,30 +16,13 @@ public class S3FileManager {
 
     private final AmazonS3Client s3Client;
 
-//    @Value("${cloud.aws.s3.bucket")
-    private String bucketName = "whaledone-server-dev";
+    private String bucketName = "whaledone-server-contents";
 
-    public String getPresignedUrl(String fileName) {
-        String filePath = "server-contents/" + fileName;
+    public String upload(MultipartFile file) throws IOException {
+        String fileName =UUID.randomUUID() + file.getOriginalFilename();
 
-        Date expiration = new java.util.Date();
-        long expTimeMillis = expiration.getTime();
-        expTimeMillis += 1000 * 60 * 60;
-        expiration.setTime(expTimeMillis);
-
-        GeneratePresignedUrlRequest generatePresignedUrlRequest =
-                new GeneratePresignedUrlRequest(bucketName, filePath)
-                        .withMethod(HttpMethod.GET)
-                        .withExpiration(expiration);
-
-        generatePresignedUrlRequest.addRequestParameter(Headers.S3_CANNED_ACL,
-                CannedAccessControlList.PublicRead.toString());
-
-        URL presignedURL = s3Client.generatePresignedUrl(generatePresignedUrlRequest);
-
-        System.out.println("Pre-Signed URL: " + presignedURL.toString());
-
-
-        return presignedURL.toExternalForm();
+        s3Client.putObject(new PutObjectRequest(bucketName, fileName, file.getInputStream(), null)
+                .withCannedAcl(CannedAccessControlList.PublicRead));
+        return s3Client.getUrl(bucketName, fileName).toString();
     }
 }

@@ -8,15 +8,18 @@ import lombok.Getter;
 @Builder
 public class CreateFamilyResponseDto {
 
-    @Schema(example = "초대 코드")
+    @Schema(description = "초대 코드")
     String invitationCode;
 
-    @Schema(example = "초대 코드 남은 유효 시간 (HH)")
+    @Schema(description = "초대 코드 남은 유효 시간", example = "HH")
     String remainingValidTimeHour;
 
-    @Schema(example = "초대 코드 남은 유효 시간 (MM)")
+    @Schema(description = "초대 코드 남은 유효 시간", example = "MM")
     String remainingValidTimeMinute;
 
-    @Schema(example = "초대 코드 남은 유효 시간 (SS)")
+    @Schema(description = "초대 코드 남은 유효 시간", example = "SS")
     String remainingValidTimeSecond;
+
+    @Schema(description = "생성된 가족 id")
+    Long familyId;
 }

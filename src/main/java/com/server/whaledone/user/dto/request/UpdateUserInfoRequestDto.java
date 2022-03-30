@@ -14,22 +14,21 @@ import javax.validation.constraints.NotBlank;
 public class UpdateUserInfoRequestDto {
 
     @NotBlank
-    @Schema(example = "국가 코드 ex) KR")
+    @Schema(description = "국가 코드", example = " ex) KR")
     private String countryCode;
 
     @NotBlank
-    @Schema(example = "유저 전화 번호")
+    @Schema(description = "유저 전화 번호", example = "01012345678 (-제외)")
     private String phoneNumber;
 
     @NotBlank
     @Length(max = 10)
-    @Schema(example = "가족 채널 명")
+    @Schema(description = "가족 채널 명")
     private String familyName;
 
-    @NotBlank
-    @Schema(example = "서비스 알람 수신 여부")
+    @Schema(description = "서비스 알람 수신 여부")
     private Boolean alarmStatus;
 
-    @Schema(example = "서비스 알람 수신 시각")
+    @Schema(description = "서비스 알람 수신 시각")
     private String alarmTime;
 }

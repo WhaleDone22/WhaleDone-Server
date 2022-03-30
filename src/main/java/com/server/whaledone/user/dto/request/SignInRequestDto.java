@@ -12,11 +12,11 @@ public class SignInRequestDto {
 
     @Email
     @NotBlank
-    @Schema(example = "유저 이메일")
+    @Schema(description = "유저 이메일")
     private String email;
 
     @NotBlank
     @Length(min = 8)
-    @Schema(example = "유저 비밀번호")
+    @Schema(description = "유저 비밀번호")
     private String password;
 }

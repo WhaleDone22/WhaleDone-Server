@@ -11,6 +11,6 @@ import javax.validation.constraints.NotBlank;
 public class UpdateProfileImgRequestDto {
 
     @NotBlank
-    @Schema(example = "이미지 저장 후 리턴받은 URL")
+    @Schema(description = "이미지 저장 후 리턴받은 URL")
     private String profileImgUrl;
 }

@@ -8,7 +8,9 @@ import com.server.whaledone.posts.PostsRepository;
 import com.server.whaledone.posts.entity.Posts;
 import com.server.whaledone.reaction.dto.request.ChangeReactionRequestDto;
 import com.server.whaledone.reaction.dto.request.SaveReactionRequestDto;
+import com.server.whaledone.reaction.dto.response.GetReactionAlarmsResponseDto;
 import com.server.whaledone.reaction.dto.response.GetReactionsResponseDto;
+import com.server.whaledone.reaction.dto.response.ReactionsMapToDateResponseDto;
 import com.server.whaledone.reaction.entity.Reaction;
 import com.server.whaledone.user.UserRepository;
 import com.server.whaledone.user.entity.User;
@@ -16,8 +18,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,5 +87,23 @@ public class ReactionService {
         }
 
         reaction.deleteReaction();
+    }
+
+    public ReactionsMapToDateResponseDto getReactionAlarms(CustomUserDetails userDetails) {
+        User user = userRepository.findByEmailAndStatus(userDetails.getEmail(), userDetails.getStatus())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+
+        List<Reaction> allReactions = new ArrayList<>();
+        user.getPosts().forEach(posts -> allReactions.addAll(posts.getReactions()));
+
+        return new ReactionsMapToDateResponseDto(getReactionMapGroupingByDate(allReactions));
+    }
+
+    private Map<LocalDate, List<GetReactionAlarmsResponseDto>> getReactionMapGroupingByDate(List<Reaction> allReactions) {
+        return allReactions.stream()
+                .filter(reaction -> reaction.getStatus() == Status.ACTIVE)
+                .map(GetReactionAlarmsResponseDto::new)
+                .sorted(Comparator.comparing(GetReactionAlarmsResponseDto::getCreatedDate).reversed())
+                .collect(Collectors.groupingBy(GetReactionAlarmsResponseDto::getCreatedDate));
     }
 }

@@ -1,5 +1,6 @@
 package com.server.whaledone.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.server.whaledone.certification.CertificationManager;
 import com.server.whaledone.config.Entity.Status;
 import com.server.whaledone.config.response.exception.CustomException;
@@ -12,6 +13,8 @@ import com.server.whaledone.family.FamilyRepository;
 import com.server.whaledone.family.entity.Family;
 import com.server.whaledone.mail.MailProvider;
 import com.server.whaledone.mail.MailRequestDto;
+import com.server.whaledone.sms.SmsService;
+import com.server.whaledone.sms.dto.SendSmsRequestDto;
 import com.server.whaledone.user.dto.request.*;
 import com.server.whaledone.user.dto.response.SignInResponseDto;
 import com.server.whaledone.user.dto.response.SignUpResponseDto;
@@ -21,6 +24,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +40,7 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final CertificationManager certificationManager;
-    private final MailProvider mailProvider;
+    private final SmsService smsService;
 
     // 회원가입
     public SignUpResponseDto signUp(SignUpRequestDto dto) {
@@ -56,6 +64,14 @@ public class UserService {
         User user = userRepository.findByEmailAndStatus(dto.getEmail(), Status.ACTIVE)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS_EMAIL));
 
+        boolean hasFamily = false;
+        Long familyId = -1L;
+
+        if (user.getFamily() != null) {
+            hasFamily = true;
+            familyId = user.getFamily().getId();
+        }
+
         if (!bCryptPasswordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new CustomException(CustomExceptionStatus.USER_NOT_MATCHES_PASSWORD);
         }
@@ -66,6 +82,8 @@ public class UserService {
                 .nickName(user.getNickName())
                 .userId(user.getId())
                 .jwtToken(token)
+                .hasFamily(hasFamily)
+                .familyId(familyId)
                 .build();
     }
 
@@ -112,19 +130,16 @@ public class UserService {
     }
 
     @Transactional
-    public void reIssuePassword(ReissuePasswordRequestDto dto) {
+    public void reIssuePassword(SendSmsRequestDto dto) throws URISyntaxException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException {
         // 비밀번호 재발급을 요청하는 유저의 이메일을 받아서, 유저 정보를 조회한다.
-        User user = userRepository.findByEmailAndStatus(dto.getEmail(), Status.ACTIVE)
+        User user = userRepository.findByPhoneNumberAndStatus(dto.getRecipientPhoneNumber(), Status.ACTIVE)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
 
         // 임시 비밀번호 생성 후 암호화해서 저장
         String tempPassword = certificationManager.randomGenerator(8);
         user.resetPassword(bCryptPasswordEncoder.encode(tempPassword));
 
-        mailProvider.mailSend(MailRequestDto.builder()
-                .email(dto.getEmail())
-                .message(tempPassword)
-                .build());
+        smsService.sendPWSms(dto, tempPassword);
     }
 
     @Transactional

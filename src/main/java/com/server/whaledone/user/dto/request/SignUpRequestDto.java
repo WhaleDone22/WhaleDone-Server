@@ -17,31 +17,28 @@ import javax.validation.constraints.Pattern;
 public class SignUpRequestDto {
     @Email
     @NotNull
-    @Schema(example = "유저 이메일")
+    @Schema(description = "유저 이메일")
     private String email;
 
     @NotBlank
     @Length(max = 5)
     @Pattern(regexp = "^[0-9a-zA-Z가-힣*,._+!?]*$")
-    @Schema(example = "유저 닉네임")
+    @Schema(description = "유저 닉네임")
     private String nickName;
 
-    @Schema(example = "국가 코드 ex) KR")
+    @Schema(description = "국가 코드", example = "KR")
     private String countryCode;
 
     @NotBlank
     @Length(min = 8)
     @Pattern(regexp = "^[0-9a-zA-Z]*$")
-    @Schema(example = "유저 비밀번호")
+    @Schema(description = "유저 비밀번호")
     private String password;
 
-    @Schema(example = "유저 전호번호 ex) ")
+    @Schema(description = "유저 전화번호", example = "01012345678 (-제외)")
     private String phoneNumber;
 
-    @Schema(example = "유저 프로필 이미지 URL")
-    private String profileImgUrl;
-
-    @Schema(example = "서비스 알람 수신 여부")
+    @Schema(description = "서비스 알람 수신 여부")
     private Boolean alarmStatus;
 
     public User toEntity(Country country) {

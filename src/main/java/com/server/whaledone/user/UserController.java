@@ -1,9 +1,11 @@
 package com.server.whaledone.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.server.whaledone.config.response.ResponseService;
 import com.server.whaledone.config.response.result.CommonResult;
 import com.server.whaledone.config.response.result.SingleResult;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
+import com.server.whaledone.sms.dto.SendSmsRequestDto;
 import com.server.whaledone.user.dto.request.*;
 import com.server.whaledone.user.dto.response.SignInResponseDto;
 import com.server.whaledone.user.dto.response.SignUpResponseDto;
@@ -16,6 +18,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 @Tag(name = "User API")
 @RestController
@@ -88,7 +94,7 @@ public class UserController {
 
     @Operation(summary = "비밀번호 재발급 메일 API", description = "해당 API를 이용해서 메일로 임시 비밀번호를 유저에게 전송한다.")
     @PostMapping("/user/new-password")
-    public CommonResult sendReIssuePasswordMail(@RequestBody @Valid ReissuePasswordRequestDto dto) {
+    public CommonResult sendReIssuePasswordMail(@RequestBody @Valid SendSmsRequestDto dto) throws URISyntaxException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException {
         userService.reIssuePassword(dto);
         return responseService.getSuccessResult();
     }

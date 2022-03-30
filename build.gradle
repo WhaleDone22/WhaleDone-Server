@@ -52,4 +52,6 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 	systemProperty 'jasypt.encryptor.password', findProperty("jasypt.encryptor.password")
+	systemProperty 'cloud.aws.credentials.access-key', findProperty("cloud.aws.credentials.access-key")
+	systemProperty 'cloud.aws.credentials.secret-key', findProperty("cloud.aws.credentials.secret-key")
 }
