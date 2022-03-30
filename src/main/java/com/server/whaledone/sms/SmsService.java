@@ -76,6 +76,8 @@ public class SmsService {
             message += "[ " + content + " ]" + SMS_SIGNUP_MESSAGE;
         } else if (smsType == SmsType.PW) {
             message += SMS_PW_MESSAGE_PREFIX + content + SMS_PW_MESSAGE_SUFFIX;
+        } else {
+            throw new CustomException(CustomExceptionStatus.SMS_TYPE_NOT_EXISTS);
         }
 
         messages.add(new MessageDto(phoneNumber, message)); // content부분이 내용임
