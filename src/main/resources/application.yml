@@ -44,6 +44,8 @@ jasypt:
 cloud:
   aws:
     credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
       instanceProfile: true
     region:
       static: ap-northeast-2
