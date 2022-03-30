@@ -3,10 +3,12 @@ package com.server.whaledone.reaction;
 import com.server.whaledone.config.response.ResponseService;
 import com.server.whaledone.config.response.result.CommonResult;
 import com.server.whaledone.config.response.result.MultipleResult;
+import com.server.whaledone.config.response.result.SingleResult;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.reaction.dto.request.ChangeReactionRequestDto;
 import com.server.whaledone.reaction.dto.request.SaveReactionRequestDto;
 import com.server.whaledone.reaction.dto.response.GetReactionsResponseDto;
+import com.server.whaledone.reaction.dto.response.ReactionsMapToDateResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -62,5 +64,12 @@ public class ReactionController {
                                        @PathVariable Long reactionId) {
         reactionService.deleteReaction(userDetails, postId, reactionId);
         return responseService.getSuccessResult();
+    }
+
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
+    @Operation(summary = "리액션 알림 조회 API", description = "내 게시글에 대한 리액션 알림을 조회한다.")
+    @GetMapping("/reaction-alarms")
+    public SingleResult<ReactionsMapToDateResponseDto> getReactionAlarms(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return responseService.getSingleResult(reactionService.getReactionAlarms(userDetails));
     }
 }
