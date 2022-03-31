@@ -58,8 +58,9 @@ sms:
 
 ---
 spring:
-  profiles:
-    active: local
+  config:
+    activate:
+      on-profile: local
 
   datasource:
     url: ENC(Kr8E0OlXtZN9I9S9HOub0IL7TuE3haexd5LmKaEzI8GVCW/tm1CEFYzwd/RQK3Tra6t/tfbthvhW6JHDZFqQrXrUT4Z3wbYN5LPqUVHxTDno0JVnOTnC1v9SBuWnfr/QF9olDZnZAYWhIJvtz7441Om2eqpj6XYQV/dLQSCTiE4sVb4wyP8gwRWu+gvRWbXn)
@@ -69,8 +70,9 @@ spring:
 
 ---
 spring:
-  profiles:
-    active: dev
+  config:
+    activate:
+      on-profile: dev
 
   datasource:
     url: ENC(Kr8E0OlXtZN9I9S9HOub0IL7TuE3haexd5LmKaEzI8GVCW/tm1CEFYzwd/RQK3Tra6t/tfbthvhW6JHDZFqQrXrUT4Z3wbYN5LPqUVHxTDno0JVnOTnC1v9SBuWnfr/QF9olDZnZAYWhIJvtz7441Om2eqpj6XYQV/dLQSCTiE4sVb4wyP8gwRWu+gvRWbXn)
@@ -80,8 +82,9 @@ spring:
 
 ---
 spring:
-  profiles:
-    active: prod
+  config:
+    activate:
+      on-profile: prod
 
   datasource:
     url: ENC(EK4xmbAxTcOPjRemM015hg0GGSpXLhZ0fJM1MUK3qiJmMeVc3XkmI6uGS20fzvoME2zx14VPT/pdGDhtZOYar+Zik6kNJrNTlA7c7SFLS9OKtxw1+kG7Uv36EOnu/XUShIEsO1SRsMsCuAVYSyjfs5IFtiJ9mzZgoldiB9P7OCRiftSsFrb5FNF8P9FeZWj4+/01dOSBgOo=)
