@@ -92,7 +92,7 @@ public class CertificationManager {
             code.delete(0, code.length());
             for (int i = 0; i < countOfNumber; i++) {
                 if (rnd.nextBoolean()) {
-                    code.append((char) (int) (rnd.nextInt(26) + 97));
+                    code.append((char) (int) (rnd.nextInt(26) + 65));
                 } else {
                     code.append((rnd.nextInt(10)));
                 }
