@@ -29,6 +29,10 @@ public class UpdateUserInfoRequestDto {
     @Schema(description = "서비스 알람 수신 여부")
     private Boolean alarmStatus;
 
-    @Schema(description = "서비스 알람 수신 시각")
-    private String alarmTime;
+//    @Schema(description = "서비스 알람 수신 시각")
+//    private String alarmTime;
+
+    @NotBlank
+    @Schema(description = "이미지 저장 후 리턴받은 URL")
+    private String profileImgUrl;
 }

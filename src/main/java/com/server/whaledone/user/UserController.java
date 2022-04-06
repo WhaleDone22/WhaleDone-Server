@@ -74,7 +74,8 @@ public class UserController {
     }
 
     @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
-    @Operation(summary = "프로필 사진 변경 API", description = "presignedURL을 이용해서 저장한 컨텐츠의 접근 URL을 토큰과 함께 전달한다.")
+    @Operation(summary = "프로필 사진 변경 API", description = "presignedURL을 이용해서 저장한 컨텐츠의 접근 URL을 토큰과 함께 전달한다." +
+            "현재 마이페이지 수정 API를 이용해서 프로필 사진을 한번에 바꾼다.")
     @PatchMapping("/users/auth/profile-image")
     public CommonResult updateUserProfileImage(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                @RequestBody UpdateProfileImgRequestDto dto) {
@@ -83,7 +84,7 @@ public class UserController {
     }
 
     @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
-    @Operation(summary = "마이페이지 수정 API", description = "국가, 전화번호, 가족 채널명, 알람 여부, 알람 시간을 받아서 업데이트한다." +
+    @Operation(summary = "마이페이지 수정 API", description = "국가, 전화번호, 가족 채널명, 알람 여부, 프로필 사진 URL을 받아서 업데이트한다." +
             "채널 명만 바뀌어도 나머지 필드도 기존값과 함께 받는다.")
     @PatchMapping("/users/auth/information")
     public CommonResult updateUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails,
@@ -92,7 +93,7 @@ public class UserController {
         return responseService.getSuccessResult();
     }
 
-    @Operation(summary = "비밀번호 재발급 메일 API", description = "해당 API를 이용해서 메일로 임시 비밀번호를 유저에게 전송한다.")
+    @Operation(summary = "비밀번호 재발급 SMS API", description = "해당 API를 이용해서 SMS로 임시 비밀번호를 유저에게 전송한다.")
     @PostMapping("/user/new-password")
     public CommonResult sendReIssuePasswordMail(@RequestBody @Valid SendSmsRequestDto dto) throws URISyntaxException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException {
         userService.reIssuePassword(dto);
