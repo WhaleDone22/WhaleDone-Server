@@ -55,7 +55,7 @@ public class SmsService {
             "* 멀리 떨어진 가족의 일상과 마음을 공유하는 소통 서비스, WhaleDone";
 
     private static final String TEST_PHONE_NUMBER = "01012345678";
-    private static final String TEST_SMS_CODE = "1q2w3";
+    private static final String TEST_SMS_CODE = "1Q2W3";
 
     public SmsResponseDto sendSignUpSms(SendSmsRequestDto dto) throws ParseException, JsonProcessingException, UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException, URISyntaxException, JsonProcessingException {
         if (dto.getRecipientPhoneNumber().equals(TEST_PHONE_NUMBER)) {
