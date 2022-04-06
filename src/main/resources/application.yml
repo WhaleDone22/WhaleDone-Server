@@ -5,10 +5,8 @@ spring:
 ---
 spring:
   jpa:
-    show-sql: true
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
-      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
@@ -67,34 +65,10 @@ spring:
   datasource:
     url: ENC(Kr8E0OlXtZN9I9S9HOub0IL7TuE3haexd5LmKaEzI8GVCW/tm1CEFYzwd/RQK3Tra6t/tfbthvhW6JHDZFqQrXrUT4Z3wbYN5LPqUVHxTDno0JVnOTnC1v9SBuWnfr/QF9olDZnZAYWhIJvtz7441Om2eqpj6XYQV/dLQSCTiE4sVb4wyP8gwRWu+gvRWbXn)
     username: ENC(OhuwwEwv/yiitEjNJEaypg==)
-    password: ENC(13pgTJX3wcMivrY26S7+nTS+T0Mnto/u)
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
----
-spring:
-  config:
-    activate:
-      on-profile: dev
-
-  datasource:
-    url: ENC(Kr8E0OlXtZN9I9S9HOub0IL7TuE3haexd5LmKaEzI8GVCW/tm1CEFYzwd/RQK3Tra6t/tfbthvhW6JHDZFqQrXrUT4Z3wbYN5LPqUVHxTDno0JVnOTnC1v9SBuWnfr/QF9olDZnZAYWhIJvtz7441Om2eqpj6XYQV/dLQSCTiE4sVb4wyP8gwRWu+gvRWbXn)
-    username: ENC(OhuwwEwv/yiitEjNJEaypg==)
-    password: ENC(13pgTJX3wcMivrY26S7+nTS+T0Mnto/u)
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
----
-spring:
-  config:
-    activate:
-      on-profile: prod
-
-  datasource:
-    url: ENC(EK4xmbAxTcOPjRemM015hg0GGSpXLhZ0fJM1MUK3qiJmMeVc3XkmI6uGS20fzvoME2zx14VPT/pdGDhtZOYar+Zik6kNJrNTlA7c7SFLS9OKtxw1+kG7Uv36EOnu/XUShIEsO1SRsMsCuAVYSyjfs5IFtiJ9mzZgoldiB9P7OCRiftSsFrb5FNF8P9FeZWj4+/01dOSBgOo=)
-    username: ENC(qLsMCntprioDPU148VjpsQ==)
-    password: ENC(EIuivMF08oFs7Ag5eh3unn38ZNc+XCYR)
+    password: ENC(ySvc2HKJC3JDN5DIuKMHL3ElllPVmtu1tPo50loo+ts=)
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
-    show-sql: false
+    show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
