@@ -113,7 +113,9 @@ public class PostsService {
         }
 
         for (Reaction reaction : reactions) {
-            contentTypeCountMap.put(reaction.getType(), contentTypeCountMap.get(reaction.getType()) + 1);
+            if(reaction.getStatus() == Status.ACTIVE) {
+                contentTypeCountMap.put(reaction.getType(), contentTypeCountMap.get(reaction.getType()) + 1);
+            }
         }
 
         for (Map.Entry<ContentType, Long> entry : contentTypeCountMap.entrySet()) {
