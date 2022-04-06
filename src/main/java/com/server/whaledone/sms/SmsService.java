@@ -14,6 +14,7 @@ import com.server.whaledone.sms.dto.standard.MessageDto;
 import com.server.whaledone.sms.dto.standard.SmsRequestDto;
 import com.server.whaledone.sms.dto.standard.SmsResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -35,6 +36,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SmsService {
 
     private final ApplicationYmlConfig config;
@@ -52,7 +54,14 @@ public class SmsService {
             "\n" +
             "* 멀리 떨어진 가족의 일상과 마음을 공유하는 소통 서비스, WhaleDone";
 
+    private static final String TEST_PHONE_NUMBER = "01012345678";
+    private static final String TEST_SMS_CODE = "1q2w3";
+
     public SmsResponseDto sendSignUpSms(SendSmsRequestDto dto) throws ParseException, JsonProcessingException, UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException, URISyntaxException, JsonProcessingException {
+        if (dto.getRecipientPhoneNumber().equals(TEST_PHONE_NUMBER)) {
+            log.info("테스트 요청 : {}", TEST_PHONE_NUMBER);
+            return new SmsResponseDto();
+        }
         CustomCodeDto smsCodeDto =  certificationManager.createSmsCode(dto.getRecipientPhoneNumber());
 
         SmsResponseDto smsResponseDto = sendSms(dto.getSmsType(), dto.getCountryCode(), dto.getRecipientPhoneNumber(), smsCodeDto.getCode());
@@ -108,6 +117,15 @@ public class SmsService {
     }
 
     public void validateCode(ValidateSmsCodeRequestDto dto) {
+        if (dto.getPhoneNumber().equals(TEST_PHONE_NUMBER)) {
+            if (dto.getSmsCode().equals(TEST_SMS_CODE)) {
+                log.info("테스트 인증코드 완료 : phone : {}, code : {}", TEST_PHONE_NUMBER, TEST_SMS_CODE);
+                return;
+            } else {
+                log.info("테스트 인증코드 불일치 : {}", dto.getSmsCode());
+                throw new CustomException(CustomExceptionStatus.CODE_INVALID_REQUEST);
+            }
+        }
         if (!certificationManager.validateSmsCode(dto.getSmsCode(), dto.getPhoneNumber())) {
             throw new CustomException(CustomExceptionStatus.CODE_EXPIRED_DATE);
         }
