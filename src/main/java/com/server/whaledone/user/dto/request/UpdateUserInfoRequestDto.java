@@ -7,11 +7,18 @@ import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Getter
 @NoArgsConstructor
 @ToString
 public class UpdateUserInfoRequestDto {
+
+    @NotBlank
+    @Length(max = 5)
+    @Pattern(regexp = "^[0-9a-zA-Z가-힣*,._+!?]*$")
+    @Schema(description = "유저 닉네임")
+    private String nickName;
 
     @NotBlank
     @Schema(description = "국가 코드", example = " ex) KR")

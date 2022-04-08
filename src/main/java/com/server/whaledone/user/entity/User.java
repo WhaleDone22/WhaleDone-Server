@@ -90,6 +90,7 @@ public class User extends BaseTimeEntity {
     }
 
     public void changeUserInfo(UpdateUserInfoRequestDto dto) {
+        this.nickName = dto.getNickName();
         this.phoneNumber = dto.getPhoneNumber();
         this.profileImgUrl = dto.getProfileImgUrl();
         this.alarmStatus = dto.getAlarmStatus();
