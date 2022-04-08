@@ -103,7 +103,7 @@ public class ReactionService {
         return allReactions.stream()
                 .filter(reaction -> reaction.getStatus() == Status.ACTIVE)
                 .map(GetReactionAlarmsResponseDto::new)
-                .sorted(Comparator.comparing(GetReactionAlarmsResponseDto::getCreatedDate).reversed())
+                .sorted(Comparator.comparing(GetReactionAlarmsResponseDto::getReactionId).reversed())
                 .collect(Collectors.groupingBy(GetReactionAlarmsResponseDto::getCreatedDate));
     }
 }
