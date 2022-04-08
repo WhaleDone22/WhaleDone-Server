@@ -22,7 +22,7 @@ public class UpdateUserInfoRequestDto {
     private String phoneNumber;
 
     @NotBlank
-    @Length(max = 10)
+    @Length(max = 12)
     @Schema(description = "가족 채널 명")
     private String familyName;
 
