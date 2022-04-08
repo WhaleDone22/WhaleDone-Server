@@ -98,9 +98,16 @@ public class PostsService {
             }
         }
 
-        return result.stream().
-                sorted(Comparator.comparing(PostsResponseDto::getCreatedDate).reversed())
-                .collect(Collectors.groupingBy(PostsResponseDto::getCreatedDate));
+        TreeMap<LocalDate, List<PostsResponseDto>> collect = result.stream()
+                .collect(Collectors.groupingBy(PostsResponseDto::getCreatedDate, TreeMap::new, Collectors.toList()));
+
+        for (Map.Entry<LocalDate, List<PostsResponseDto>> localDateListEntry : collect.entrySet()) {
+            localDateListEntry.getValue().sort((o1, o2) -> o2.getId().compareTo(o1.getId()));
+        }
+
+        TreeMap<LocalDate, List<PostsResponseDto>> reverseResult = new TreeMap<>(Collections.reverseOrder());
+        reverseResult.putAll(collect);
+        return reverseResult;
     }
 
     private List<ReactionCountDto> getReactionCountListByType(List<Reaction> reactions) {
