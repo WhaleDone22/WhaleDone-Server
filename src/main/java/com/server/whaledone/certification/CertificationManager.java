@@ -91,11 +91,7 @@ public class CertificationManager {
         do{
             code.delete(0, code.length());
             for (int i = 0; i < countOfNumber; i++) {
-                if (rnd.nextBoolean()) {
-                    code.append((char) (int) (rnd.nextInt(26) + 65));
-                } else {
-                    code.append((rnd.nextInt(10)));
-                }
+                code.append((rnd.nextInt(10)));
             }
         } while(validateDuplicationForCode(code.toString()));
         // 중복이면 true를 리턴 => while문을 타게 된다.
