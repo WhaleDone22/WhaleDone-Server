@@ -9,6 +9,8 @@ aws.yml
 application-dev.yml
 application-prod.yml
 
+firebase/whaledone-firebase-key.json
+
 ### STS ###
 .apt_generated
 .classpath
