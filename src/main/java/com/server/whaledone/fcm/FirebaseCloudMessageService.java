@@ -10,18 +10,19 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.List;
 
-@Component
+//@Component
 @RequiredArgsConstructor
 public class FirebaseCloudMessageService {
 
     @Value("${firebase.key}")
-    private final String firebaseConfigPath;
+    private String firebaseConfigPath;
 
     @Value("${firebase.apiUrl}")
-    private final String API_URL;
+    private String API_URL;
 
     private final ObjectMapper objectMapper;
 
