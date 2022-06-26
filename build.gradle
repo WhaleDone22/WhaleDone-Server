@@ -56,8 +56,13 @@ dependencies {
 		exclude group: 'ch.qos.logback', module: 'logback-core'
 	}
 
-	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+	// firebase sdk
+	implementation 'com.google.firebase:firebase-admin:6.8.1'
 
+	// okhttp
+	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
+
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 tasks.named('test') {

@@ -64,6 +64,9 @@ sms:
   secretKey: ENC(rtO5xCkUQ+c9FybgG7ePYgFM+XsUU1QiEfXUjdrSDSXZ0e8c/wM1D3Fk79KyT+weGHAaM3yKmL0=)
   from: ENC(Nhuw02FTD8upol2UopaXBaBuxOxnf7QY)
 
+firebase:
+  key: firebase/whaledone-firebase-key.json
+  apiUrl: https://fcm.googleapis.com/v1/projects/whaledone-29e55/messages:send
 ---
 spring:
   config:
