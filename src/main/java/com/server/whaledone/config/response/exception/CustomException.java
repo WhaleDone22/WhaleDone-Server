@@ -7,7 +7,7 @@ public class CustomException extends RuntimeException{
     private CustomExceptionStatus status;
 
     public CustomException(CustomExceptionStatus status) {
-        super(status.getMessage());
+        super(status.toString() +" : " + status.getMessage());
         this.status = status;
     }
 }
