@@ -15,7 +15,7 @@ public enum CustomExceptionStatus {
 
     // Common
     INVALID_INPUT_VALUE(true, "COM001", "유효하지 않은 입력입니다."),
-
+    METHOD_NOT_ALLOWED(true, "COM002", "지원하지 않는 HTTP METHOD"),
     /**
      * User
      */
