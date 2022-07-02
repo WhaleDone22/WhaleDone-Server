@@ -40,7 +40,7 @@ public class JwtTokenProvider {
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .withClaim("role", roleType.toString())
                 .withClaim("email", email)
-                .sign(Algorithm.HMAC512(SECRET_KEY));
+                .sign(Algorithm.HMAC256(SECRET_KEY));
     }
 
     // jwt 토큰에서 인증 정보 조회
