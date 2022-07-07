@@ -1,10 +1,19 @@
 package com.server.whaledone.config.security.jwt;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.AlgorithmMismatchException;
+import com.auth0.jwt.exceptions.InvalidClaimException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.server.whaledone.config.Entity.Status;
+import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.auth.CustomUserDetailsService;
 import com.server.whaledone.user.entity.RoleType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,12 +21,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtTokenProvider {
 
     @Value("${jwt.secret}")
@@ -65,7 +76,22 @@ public class JwtTokenProvider {
     }
 
     // 토큰의 유효성 + 만료일자 확인
-    public boolean validateToken(String token) {
-        return !JWT.decode(token).getExpiresAt().before(new Date()); // 만료되는 날짜가 오늘 이전이면 이미 만료된 것
+    public boolean validateToken(String token, ServletRequest request) {
+        try {
+            final JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(SECRET_KEY)).build();
+
+            DecodedJWT decodedJWT = jwtVerifier.verify(token);
+            return true;
+        } catch (TokenExpiredException tokenExpiredException) {
+            request.setAttribute("exceptionMessage", tokenExpiredException.getMessage());
+            request.setAttribute("tokenException", CustomExceptionStatus.TOKEN_EXPIRED);
+        } catch (AlgorithmMismatchException | InvalidClaimException invalidTokenException) {
+            request.setAttribute("exceptionMessage", invalidTokenException.getMessage());
+            request.setAttribute("tokenException", CustomExceptionStatus.INVALID_TOKEN);
+        } catch (JWTVerificationException exception) {
+            request.setAttribute("exceptionMessage", exception.getMessage());
+            request.setAttribute("tokenException", CustomExceptionStatus.INVALID_AUTHENTICATION);
+        }
+        return false;
     }
 }
