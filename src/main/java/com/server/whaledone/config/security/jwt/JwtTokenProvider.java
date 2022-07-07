@@ -77,6 +77,9 @@ public class JwtTokenProvider {
 
     // 토큰의 유효성 + 만료일자 확인
     public boolean validateToken(String token, ServletRequest request) {
+        if (token == null) {
+            return false;
+        }
         try {
             final JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(SECRET_KEY)).build();
 
