@@ -8,7 +8,6 @@ import com.auth0.jwt.exceptions.InvalidClaimException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.server.whaledone.config.Entity.Status;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
 import com.server.whaledone.config.security.auth.CustomUserDetailsService;
 import com.server.whaledone.user.entity.RoleType;
@@ -82,17 +81,13 @@ public class JwtTokenProvider {
         }
         try {
             final JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(SECRET_KEY)).build();
-
             DecodedJWT decodedJWT = jwtVerifier.verify(token);
             return true;
         } catch (TokenExpiredException tokenExpiredException) {
-            request.setAttribute("exceptionMessage", tokenExpiredException.getMessage());
             request.setAttribute("tokenException", CustomExceptionStatus.TOKEN_EXPIRED);
         } catch (AlgorithmMismatchException | InvalidClaimException invalidTokenException) {
-            request.setAttribute("exceptionMessage", invalidTokenException.getMessage());
             request.setAttribute("tokenException", CustomExceptionStatus.INVALID_TOKEN);
         } catch (JWTVerificationException exception) {
-            request.setAttribute("exceptionMessage", exception.getMessage());
             request.setAttribute("tokenException", CustomExceptionStatus.INVALID_AUTHENTICATION);
         }
         return false;
