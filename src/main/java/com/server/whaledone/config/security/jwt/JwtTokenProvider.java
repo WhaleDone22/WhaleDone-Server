@@ -30,8 +30,9 @@ import java.util.Date;
 @Slf4j
 public class JwtTokenProvider {
 
-    @Value("${jwt.secret}")
-    private String SECRET_KEY;
+//    @Value("${jwt.secret}")
+//    private String SECRET_KEY;
+    private String SECRET_KEY = "test";
     private long EXPIRATION_TIME = 100 * 24 * 60 * 60 * 1000L;
     private String HEADER_STRING = "X-AUTH-TOKEN";
     private String TOKEN_PREFIX = "Bearer ";
