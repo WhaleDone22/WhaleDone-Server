@@ -53,7 +53,7 @@ jobs:
       run: chmod +x gradlew
       
     - name: Build with Gradle
-      run: ./gradlew build -Pjasypt.encryptor.password=${{ secrets.JASYPT_WHALEDONE_PASSWORD }} -Pcloud.aws.credentials.access-key=${{ secrets.CREDENTIALS_ACCESS_KEY }} -Pcloud.aws.credentials.secret-key=${{ secrets.CREDENTIALS_SECRET_KEY }}
+      run: ./gradlew build -Pjasypt.encryptor.password=${{ secrets.JASYPT_WHALEDONE_PASSWORD }} -Pcloud.aws.credentials.access-key=${{ secrets.CREDENTIALS_ACCESS_KEY }} -Pcloud.aws.credentials.secret-key=${{ secrets.CREDENTIALS_SECRET_KEY }} -Pjwt.secret=${{ secrets.JWT_SECRET }}
 
     - name: Make zip file
       run: zip -r ./$GITHUB_SHA.zip .
