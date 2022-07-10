@@ -33,15 +33,15 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
 
-    - name: Set yml file
-      uses: microsoft/variable-substitution@v1
-      with:
-        files: ${{ env.RESOURCE_PATH }}
-      env:
-        cloud.aws.credentials.access-key: ${{ secrets.CREDENTIALS_ACCESS_KEY }}
-        cloud.aws.credentials.secret-key: ${{ secrets.CREDENTIALS_SECRET_KEY }}
-        jasypt.encryptor.password: ${{ secrets.JASYPT_WHALEDONE_PASSWORD }}
-        jwt.secret: ${{ secrets.JWT_SECRET }}
+#    - name: Set yml file
+#      uses: microsoft/variable-substitution@v1
+#      with:
+#        files: ${{ env.RESOURCE_PATH }}
+#      env:
+#        cloud.aws.credentials.access-key: ${{ secrets.CREDENTIALS_ACCESS_KEY }}
+#        cloud.aws.credentials.secret-key: ${{ secrets.CREDENTIALS_SECRET_KEY }}
+#        jasypt.encryptor.password: ${{ secrets.JASYPT_WHALEDONE_PASSWORD }}
+#        jwt.secret: ${{ secrets.JWT_SECRET }}
 
     - name: Setup MySQL
       uses: samin/mysql-action@v1
@@ -55,7 +55,7 @@ jobs:
       run: chmod +x gradlew
       
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew build -Pcloud.aws.credentials.access-key=${{ secrets.CREDENTIALS_ACCESS_KEY }} -Pcloud.aws.credentials.secret-key=${{ secrets.CREDENTIALS_SECRET_KEY }} -Pjasypt.encryptor.password=${{ secrets.JASYPT_WHALEDONE_PASSWORD }} -Pjwt.secret=${{ secrets.JWT_SECRET }}
       shell: bash
 
     - name: Make zip file
