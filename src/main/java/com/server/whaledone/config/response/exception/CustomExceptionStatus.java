@@ -9,8 +9,12 @@ public enum CustomExceptionStatus {
 
     // Server
     INTERNAL_SERVER_ERROR(true, "SERVER001", "서버에 문제가 발생했어요. 잠시 후 다시 시도하세요."),
-    INVALID_AUTHORIZATION(true, "AUTH001", "해당 페이지에 권한이 없는 사용자입니다. 토큰을 확인해주세요."),
+
+    // Authentication, Authorization with token
+    INVALID_AUTHORIZATION(true, "AUTH001", "해당 페이지에 권한이 없는 사용자입니다."),
     INVALID_AUTHENTICATION(true, "AUTH002", "클라이언트 인증이 실패한 사용자입니다."),
+    TOKEN_EXPIRED(true, "AUTHO003", "로그인이 만료되었습니다."),
+    INVALID_TOKEN(true, "AUTHO004", "유효하지 않은 인증 정보입니다."),
 
 
     // Common

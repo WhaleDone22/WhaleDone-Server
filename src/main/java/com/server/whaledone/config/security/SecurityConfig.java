@@ -1,5 +1,6 @@
 package com.server.whaledone.config.security;
 
+import com.server.whaledone.config.response.exception.CustomAuthenticationEntryPoint;
 import com.server.whaledone.config.security.jwt.JwtAuthenticationFilter;
 import com.server.whaledone.config.security.jwt.JwtTokenProvider;
 import com.server.whaledone.user.UserRepository;
@@ -51,11 +52,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(corsFilter)
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
 
+                .exceptionHandling()
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                .and()
+
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/v1/user/sign-in", "/api/v1/user/sign-up",
                         "/api/v1/user/validation/email", "/api/v1/user/validation/nickname",
                         "/api/v1/sms/code", "/api/v1/sms/validation/code",
                         "/api/v1/user/new-password").permitAll()
+                .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
                 .antMatchers("/api/v1/membership")
                 .access("hasRole('ROLE_MEMBERSHIP') or hasRole('ROLE_ADMIN')")
                 .anyRequest().authenticated();

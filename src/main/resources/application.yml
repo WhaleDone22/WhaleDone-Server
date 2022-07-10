@@ -67,6 +67,9 @@ sms:
 firebase:
   key: firebase/whaledone-firebase-key.json
   apiUrl: https://fcm.googleapis.com/v1/projects/whaledone-29e55/messages:send
+
+jwt:
+  secret: test
 ---
 spring:
   config:
