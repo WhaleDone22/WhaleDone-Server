@@ -69,7 +69,7 @@ firebase:
   apiUrl: https://fcm.googleapis.com/v1/projects/whaledone-29e55/messages:send
 
 jwt:
-  secret: ${JWT_SECRET}
+  secret: test
 ---
 spring:
   config:
