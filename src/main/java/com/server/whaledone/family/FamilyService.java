@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -125,6 +126,15 @@ public class FamilyService {
                 .second(dto.getSecond())
                 .build();
         }
+
+    public FamilyInfoResponseDto getFamilyInfo(CustomUserDetails customUserDetails, Long familyId) {
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.GROUP_NOT_EXISTS));
+        // 해당 familyId가 내 가족이 맞는지?
+        return FamilyInfoResponseDto.builder()
+                .familyName(family.getFamilyName())
+                .build();
+    }
 
     public List<FamilyTimeDiffResponseDto> getFamilyTimeDiff(CustomUserDetails userDetails, Long familyId) {
         Family family = familyRepository.findById(familyId)

@@ -80,4 +80,14 @@ public class FamilyController {
             @PathVariable Long familyId) {
         return responseService.getMultipleResult(familyService.getFamilyTimeDiff(userDetails, familyId));
     }
+
+    @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 access_token", required = true)
+    @Operation(summary = "가족 정보 조회 API",
+            description = "갖고 있는 familyId를 통해 해당 가족 정보를 조회한다.")
+    @GetMapping("/families/{familyId}")
+    public SingleResult<FamilyInfoResponseDto> getFamilyInfo(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long familyId) {
+        return responseService.getSingleResult(familyService.getFamilyInfo(userDetails, familyId));
+    }
 }
