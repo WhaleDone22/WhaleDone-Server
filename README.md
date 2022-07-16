@@ -60,3 +60,6 @@
 </div>
 
 <h2> ERD </h2>
+<div align="center" style="display:flex;">
+<img src="https://user-images.githubusercontent.com/66156531/179342686-e1f10992-9efa-4c9c-8d01-da8a139ef01c.png" width="700" alt="logo"/>
+</div>
