@@ -6,6 +6,7 @@ import com.server.whaledone.config.response.result.CommonResult;
 import com.server.whaledone.config.response.result.SingleResult;
 import com.server.whaledone.config.security.auth.CustomUserDetails;
 import com.server.whaledone.sms.dto.SendSmsRequestDto;
+import com.server.whaledone.sms.dto.ValidateSmsCodeRequestDto;
 import com.server.whaledone.user.dto.request.*;
 import com.server.whaledone.user.dto.response.SignInResponseDto;
 import com.server.whaledone.user.dto.response.SignUpResponseDto;
@@ -107,5 +108,11 @@ public class UserController {
                                       @RequestBody @Valid ResetPasswordRequestDto dto) {
         userService.resetPassword(userDetails, dto);
         return responseService.getSuccessResult();
+    }
+
+    @Operation(summary = "비밀번호 초기화 인증 번호 검증 API", description = "인증 번호를 입력 받아 본인 인증을 진행 후 임시 비밀번호를 발급한다.")
+    @PostMapping("/user/validation/password-code")
+    public CommonResult validatePasswordCode(@RequestBody @Valid ValidateSmsCodeRequestDto dto) {
+        return responseService.getSingleResult(userService.validatePasswordCode(dto));
     }
 }

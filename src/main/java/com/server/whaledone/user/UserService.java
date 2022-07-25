@@ -15,7 +15,9 @@ import com.server.whaledone.mail.MailProvider;
 import com.server.whaledone.mail.MailRequestDto;
 import com.server.whaledone.sms.SmsService;
 import com.server.whaledone.sms.dto.SendSmsRequestDto;
+import com.server.whaledone.sms.dto.ValidateSmsCodeRequestDto;
 import com.server.whaledone.user.dto.request.*;
+import com.server.whaledone.user.dto.response.ResetPasswordResponseDto;
 import com.server.whaledone.user.dto.response.SignInResponseDto;
 import com.server.whaledone.user.dto.response.SignUpResponseDto;
 import com.server.whaledone.user.dto.response.UserInfoResponseDto;
@@ -149,5 +151,25 @@ public class UserService {
 
         // 변경할 비밀번호를 받아서 reset
         user.resetPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
+    }
+
+    @Transactional
+    public ResetPasswordResponseDto validatePasswordCode(ValidateSmsCodeRequestDto dto) {
+        if (!certificationManager.validateSmsCode(dto.getSmsCode(), dto.getPhoneNumber())) {
+            throw new CustomException(CustomExceptionStatus.CODE_EXPIRED_DATE);
+        }
+        // 현재 해당 코드가 있는지, 해당 코드의 시간이 유효한지, 해당 코드와 번호가 일치하는지 검증
+        certificationManager.deleteCodeInfo(dto.getSmsCode());
+
+        // 비밀번호 재발급을 요청하는 유저의 전화번호를 받아서, 유저 정보를 조회한다.
+        User user = userRepository.findByPhoneNumberAndStatus(dto.getPhoneNumber(), Status.ACTIVE)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_EXISTS));
+        // 완료시 메모리에서 제거
+        String tempPassword = certificationManager.randomGenerator(8);
+        user.resetPassword(bCryptPasswordEncoder.encode(tempPassword));
+
+        return ResetPasswordResponseDto.builder()
+                .tempPassword(tempPassword)
+                .build();
     }
 }
