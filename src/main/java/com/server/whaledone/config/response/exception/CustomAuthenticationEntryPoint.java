@@ -16,8 +16,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         CustomExceptionStatus exception = (CustomExceptionStatus) request.getAttribute("tokenException");
-        log.error("Authentication Exception at AuthenticationEntryPoint");
-
+        log.error("Authentication Exception at AuthenticationEntryPoint : {}", request.getRemoteAddr());
         if (exception == null || exception.equals(CustomExceptionStatus.INVALID_TOKEN)){
             response.sendRedirect("/exception/invalid-token"); // AlgorithmMismatchException, InvalidClaimException, NullPointerException
         } else if (exception.equals(CustomExceptionStatus.TOKEN_EXPIRED)) {
