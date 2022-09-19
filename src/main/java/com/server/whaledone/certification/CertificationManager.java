@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.WeakHashMap;
 
 @Component
 public class CertificationManager {
@@ -21,7 +21,7 @@ public class CertificationManager {
     private final long SMS_CERTIFICATION_CODE_EXPIRATION_TIME = 3 * 60 * 1000L; // 1초 * 60(초) * 3(분) = 3분
     private final long GROUP_INVITATION_CODE_EXPIRATION_TIME = 48 * 60 * 60 * 1000L; // 1초 * 60(초) * 60(분) * 48(시간) = 48시간
 
-    private ConcurrentHashMap<String, CustomCodeInfo> codeRepository = new ConcurrentHashMap<>();
+    private WeakHashMap<String, CustomCodeInfo> codeRepository = new WeakHashMap<>();
     // SMS -> key : 인증코드, value : 전화번호 & expiredAt
     // Invitation -> key : 인증코드, value : familyId & expiredAt
 
