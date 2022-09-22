@@ -117,21 +117,26 @@ public class SmsService {
     }
 
     public void validateCode(ValidateSmsCodeRequestDto dto) {
-        if (dto.getPhoneNumber().equals(TEST_PHONE_NUMBER)) {
-            if (dto.getSmsCode().equals(TEST_SMS_CODE)) {
-                log.info("테스트 인증코드 완료 : phone : {}, code : {}", TEST_PHONE_NUMBER, TEST_SMS_CODE);
-                return;
-            } else {
-                log.info("테스트 인증코드 불일치 : {}", dto.getSmsCode());
-                throw new CustomException(CustomExceptionStatus.CODE_INVALID_REQUEST);
-            }
-        }
+        if (validateForTest(dto)) return;
         if (!certificationManager.validateSmsCode(dto.getSmsCode(), dto.getPhoneNumber())) {
             throw new CustomException(CustomExceptionStatus.CODE_EXPIRED_DATE);
         }
         // 현재 해당 코드가 있는지, 해당 코드의 시간이 유효한지, 해당 코드와 번호가 일치하는지 검증
         certificationManager.deleteCodeInfo(dto.getSmsCode());
         // 완료시 메모리에서 제거
+    }
+
+    private boolean validateForTest(ValidateSmsCodeRequestDto dto) {
+        if (dto.getPhoneNumber().equals(TEST_PHONE_NUMBER)) {
+            if (dto.getSmsCode().equals(TEST_SMS_CODE)) {
+                log.info("테스트 인증코드 완료 : phone : {}, code : {}", TEST_PHONE_NUMBER, TEST_SMS_CODE);
+                return true;
+            } else {
+                log.info("테스트 인증코드 불일치 : {}", dto.getSmsCode());
+                throw new CustomException(CustomExceptionStatus.CODE_INVALID_REQUEST);
+            }
+        }
+        return false;
     }
 
     private String makeSignature(Long time) throws UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException {
