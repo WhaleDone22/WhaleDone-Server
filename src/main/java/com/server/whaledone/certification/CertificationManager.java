@@ -1,11 +1,11 @@
 package com.server.whaledone.certification;
 
-import com.server.whaledone.certification.entity.CustomCodeDto;
-import com.server.whaledone.certification.entity.CustomCodeInfo;
-import com.server.whaledone.certification.entity.InvitationCodeInfo;
-import com.server.whaledone.certification.entity.SmsCertificationCodeInfo;
+import com.server.whaledone.certification.entity.*;
+import com.server.whaledone.certification.redis.SmsCode;
+import com.server.whaledone.certification.repository.SmsCodeRedisRepository;
 import com.server.whaledone.config.response.exception.CustomException;
 import com.server.whaledone.config.response.exception.CustomExceptionStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.WeakHashMap;
 
 @Component
+@RequiredArgsConstructor
 public class CertificationManager {
 
     private final int SMS_CERTIFICATION_CODE_LENGTH = 5;
@@ -22,24 +23,16 @@ public class CertificationManager {
     private final long GROUP_INVITATION_CODE_EXPIRATION_TIME = 48 * 60 * 60 * 1000L; // 1초 * 60(초) * 60(분) * 48(시간) = 48시간
 
     private WeakHashMap<String, CustomCodeInfo> codeRepository = new WeakHashMap<>();
+    private final SmsCodeRedisRepository smsCodeRedisRepository;
     // SMS -> key : 인증코드, value : 전화번호 & expiredAt
     // Invitation -> key : 인증코드, value : familyId & expiredAt
 
-    public CustomCodeDto createSmsCode(String phoneNumber) {
+    public SmsCodeDto createSmsCode(String phoneNumber) {
         String smsCode = randomGenerator(SMS_CERTIFICATION_CODE_LENGTH);
-        Date expiredAt = new Date(System.currentTimeMillis() + SMS_CERTIFICATION_CODE_EXPIRATION_TIME);
 
-        SmsCertificationCodeInfo metaData = SmsCertificationCodeInfo.builder()
-                .expiredTime(expiredAt)
-                .phoneNumber(phoneNumber)
-                .build();
+        smsCodeRedisRepository.save(SmsCode.of(phoneNumber, smsCode));
 
-        codeRepository.put(smsCode, metaData);
-
-        return CustomCodeDto.builder()
-                .code(smsCode)
-                .info(metaData)
-                .build();
+        return SmsCodeDto.of(smsCode, phoneNumber, SMS_CERTIFICATION_CODE_EXPIRATION_TIME);
     }
 
     public CustomCodeDto createInvitationCode(Long familyId) {
@@ -59,34 +52,32 @@ public class CertificationManager {
                 .build();
     }
 
-    public boolean validateSmsCode(String code, String phoneNumber) {
-        if (!validateCode(code)) {
-            throw new CustomException(CustomExceptionStatus.CODE_EXPIRED_DATE);
+    public void validateSmsCode(String code, String phoneNumber) {
+        SmsCode smsCode = smsCodeRedisRepository.findById(phoneNumber)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.CODE_INVALID_REQUEST));
+
+        if (!smsCode.getCode().equals(code)) {
+            throw new CustomException(CustomExceptionStatus.CODE_INVALID_REQUEST);
         }
-        SmsCertificationCodeInfo info = (SmsCertificationCodeInfo) codeRepository.get(code);
-        return info.getPhoneNumber().equals(phoneNumber);
+        smsCodeRedisRepository.deleteById(phoneNumber);
     }
 
-    // 코드 유효 시간 검증 - SMS 인증 : 3분, 가족 초대 코드 : 48시간
-    public boolean validateCode(String code) {
-        if(!codeRepository.containsKey(code))
-            throw new CustomException(CustomExceptionStatus.CODE_INVALID_REQUEST);
-        return new Date().before(codeRepository.get(code).getExpiredTime());
-        // 현재 시각이 코드 만료날짜 전이면 유효한 코드
+    public boolean validateInvitationCode(String code) {
+        return true;
     }
 
     public CustomCodeInfo getCodeInfo(String code) {
         return codeRepository.get(code);
     }
 
-    public void deleteCodeInfo(String code) {
-        codeRepository.remove(code);
+    public void deleteCodeInfo(String phoneNumber) {
+        smsCodeRedisRepository.deleteById(phoneNumber);
     }
 
     // 유일한 코드 생성
     public String randomGenerator(int countOfNumber) {
         Random rnd = new Random();
-        StringBuffer code = new StringBuffer();
+        StringBuilder code = new StringBuilder();
 
         do{
             code.delete(0, code.length());
