@@ -66,7 +66,7 @@ public class FamilyService {
 
     @Transactional
     public ValidateInvitationCodeResponseDto validateInvitationCode(CustomUserDetails userDetails, ValidateInvitationCodeRequestDto dto) {
-        if (!certificationManager.validateCode(dto.getInvitationCode())) {
+        if (!certificationManager.validateInvitationCode(dto.getInvitationCode())) {
             certificationManager.deleteCodeInfo(dto.getInvitationCode()); // 유효 기간이 지났으므로 지워준다.
             throw new CustomException(CustomExceptionStatus.CODE_EXPIRED_DATE);
         }

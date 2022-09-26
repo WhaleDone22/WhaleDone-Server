@@ -155,11 +155,8 @@ public class UserService {
 
     @Transactional
     public ResetPasswordResponseDto validatePasswordCode(ValidateSmsCodeRequestDto dto) {
-        if (!certificationManager.validateSmsCode(dto.getSmsCode(), dto.getPhoneNumber())) {
-            throw new CustomException(CustomExceptionStatus.CODE_EXPIRED_DATE);
-        }
+        certificationManager.validateSmsCode(dto.getSmsCode(), dto.getPhoneNumber());
         // 현재 해당 코드가 있는지, 해당 코드의 시간이 유효한지, 해당 코드와 번호가 일치하는지 검증
-        certificationManager.deleteCodeInfo(dto.getSmsCode());
 
         // 비밀번호 재발급을 요청하는 유저의 전화번호를 받아서, 유저 정보를 조회한다.
         User user = userRepository.findByPhoneNumberAndStatus(dto.getPhoneNumber(), Status.ACTIVE)
