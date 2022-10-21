@@ -28,6 +28,7 @@ public class CertificationManager {
     // Invitation -> key : 인증코드, value : familyId & expiredAt
 
     public SmsCodeDto createSmsCode(String phoneNumber) {
+        validateDuplicatePhoneNumberRequest(phoneNumber);
         String smsCode = randomGenerator(SMS_CERTIFICATION_CODE_LENGTH);
 
         smsCodeRedisRepository.save(SmsCode.of(phoneNumber, smsCode));
@@ -92,5 +93,11 @@ public class CertificationManager {
 
     private boolean validateDuplicationForCode(String code) {
         return codeRepository.containsKey(code);
+    }
+
+    private void validateDuplicatePhoneNumberRequest(String phoneNumber) {
+        if (smsCodeRedisRepository.existsById(phoneNumber)) {
+            throw new CustomException(CustomExceptionStatus.SMS_DUPLICATE_REQUEST);
+        }
     }
 }

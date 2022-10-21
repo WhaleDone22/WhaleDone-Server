@@ -60,7 +60,8 @@ public enum CustomExceptionStatus {
     QUESTION_NOT_EXISTS_IN_CATEGORY(true, "Q001", "해당 카테고리의 질문이 존재하지 않습니다."),
 
     // SMS
-    SMS_TYPE_NOT_EXISTS(true, "S001", "SMS 타입[회원가입 또는 비밀번호 조회]를 지정해주세요.");
+    SMS_TYPE_NOT_EXISTS(true, "S001", "SMS 타입[회원가입 또는 비밀번호 조회]를 지정해주세요."),
+    SMS_DUPLICATE_REQUEST(true, "S002", "중복된 sms 요청입니다");
 
     private final boolean responseStatus;
     private final String code;
