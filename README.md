@@ -1,7 +1,7 @@
 # WhaleDone-Server
 <p>
 <img src="https://img.shields.io/badge/release-1.0.0-339933">
-<img src="https://img.shields.io/badge/maintenance-YES-339933"> 
+<img src="https://img.shields.io/badge/maintenance-NO-339933"> 
 </p>
 <br>
 <div align="center" style="display:flex;">
